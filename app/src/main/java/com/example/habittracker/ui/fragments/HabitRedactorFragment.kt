@@ -26,12 +26,17 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
         const val ADD_HABIT_KEY = 3
         const val CHANGE_HABIT_KEY = 2
         const val REQUEST_CODE = "requestCode"
+        const val COLOR = "color"
 
 
     }
 
-    private lateinit var colorDialog: ColorChoseDialog;
-    var color: Int =  0
+    private var color: Int =  0
+        set(value) {
+            field = value
+            val state = ColorStateList.valueOf(value)
+            color_pick_fab.backgroundTintList = state
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_habit_redactor, container, false)
@@ -57,15 +62,28 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
             }
         }
         color_pick_fab.setOnClickListener {
-            colorDialog.show(childFragmentManager, "Color Picker")
+            findNavController().navigate(R.id.action_habitRedactorFragment_to_colorChoseDialog)
         }
-        colorDialog = ColorChoseDialog()
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(COLOR, color)
+    }
+
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        color = savedInstanceState?.getInt(COLOR) ?: resources.getColor(R.color.colorGreen)
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+
+
+
 
     private fun closeKeyboard(){
         activity?.currentFocus?.let { view ->
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -80,8 +98,6 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
             HabitType.BAD -> radioGroup.check(R.id.secondRadio)
         }
         color = habit.color
-        val state = ColorStateList.valueOf(habit.color)
-        color_pick_fab.backgroundTintList = state
     }
 
     private fun validation(): Boolean {
@@ -156,10 +172,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
 
 
     override fun sendColor(color: Int) {
-        val state = ColorStateList.valueOf(color)
-        color_pick_fab.backgroundTintList = state
         this.color = color
-        colorDialog.dismiss()
     }
 
 }

@@ -47,8 +47,4 @@ object HabitData {
         }
     }
 
-    fun remove(id: Long) {
-        habits.remove(id)
-    }
-
 }

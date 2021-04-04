@@ -20,10 +20,15 @@
         android:name="com.example.habittracker.ui.fragments.AboutAppFragment"
         android:label="@string/menu_about_app"
         tools:layout="@layout/fragment_about_app" />
-    <fragment
+    <dialog
         android:id="@+id/colorChoseDialog"
         android:name="com.example.habittracker.ui.fragments.ColorChoseDialog"
-        android:label="ColorChoseDialog" />
+        android:label="ColorChoseDialog" >
+
+        <action
+            android:id="@+id/action_colorChoseDialog_to_habitRedactorFragment"
+            app:destination="@id/habitRedactorFragment" />
+    </dialog>
     <fragment
         android:id="@+id/habitRedactorFragment"
         android:name="com.example.habittracker.ui.fragments.HabitRedactorFragment"
@@ -31,6 +36,10 @@
         <action
             android:id="@+id/action_habitRedactorFragment_to_viewPagerFragment"
             app:destination="@id/viewPagerFragment" />
+        <action
+            android:id="@+id/action_habitRedactorFragment_to_colorChoseDialog"
+            app:destination="@id/colorChoseDialog" />
+
     </fragment>
     <fragment
         android:id="@+id/viewPagerFragment"
