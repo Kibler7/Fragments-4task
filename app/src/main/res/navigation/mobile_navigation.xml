@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/viewPagerFragment">
+
+    <fragment
+        android:id="@+id/nav_habit_list"
+        android:name="com.example.habittracker.ui.fragments.HabitListFragment"
+        android:label="@string/menu_habit_list"
+        tools:layout="@layout/fragment_habit_list" >
+        <action
+            android:id="@+id/action_nav_habit_list_to_viewPagerFragment"
+            app:destination="@id/viewPagerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_about_app"
+        android:name="com.example.habittracker.ui.fragments.AboutAppFragment"
+        android:label="@string/menu_about_app"
+        tools:layout="@layout/fragment_about_app" />
+    <fragment
+        android:id="@+id/colorChoseDialog"
+        android:name="com.example.habittracker.ui.fragments.ColorChoseDialog"
+        android:label="ColorChoseDialog" />
+    <fragment
+        android:id="@+id/habitRedactorFragment"
+        android:name="com.example.habittracker.ui.fragments.HabitRedactorFragment"
+        android:label="Новая привычка" >
+        <action
+            android:id="@+id/action_habitRedactorFragment_to_viewPagerFragment"
+            app:destination="@id/viewPagerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.example.habittracker.ui.fragments.ViewPagerFragment"
+        android:label="Мои привычки" >
+        <action
+            android:id="@+id/action_viewPagerFragment_to_habitRedactorFragment"
+            app:destination="@id/habitRedactorFragment" />
+        <action
+            android:id="@+id/action_viewPagerFragment_to_nav_habit_list"
+            app:destination="@id/nav_habit_list" />
+    </fragment>
+
+
+</navigation>
