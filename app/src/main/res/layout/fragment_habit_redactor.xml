@@ -4,7 +4,7 @@
     xmlns:android = "http://schemas.android.com/apk/res/android"
 
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" layout_height="">
+    android:layout_height="match_parent" >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_marginTop="@dimen/large_margin"
-                android:text="@string/priority_text"
+                android:text="@string/habit_priority"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/radioGroup"
@@ -116,7 +116,7 @@
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginLeft="@dimen/normal_margin"
                 android:layout_marginBottom="@dimen/normal_margin"
-                android:text="@string/often_text"
+                android:text="@string/periodicity_text"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/edit_times"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -158,7 +158,7 @@
                 android:id="@+id/errorText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="@dimen/large_margin"
                 android:text="@string/error_text"
                 android:textColor="@color/design_default_color_error"
                 android:textSize="14sp"
@@ -175,7 +175,7 @@
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginLeft="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/large_margin"
-                android:text="@string/repeat"
+                android:text="@string/frequency_text1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textFrequency" />
 
@@ -185,7 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginLeft="@dimen/large_margin"
-                android:text="@string/time_per"
+                android:text="@string/frequency_text2"
                 app:layout_constraintStart_toEndOf="@+id/edit_times"
                 app:layout_constraintTop_toTopOf="@+id/often_text1" />
 
@@ -195,7 +195,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginLeft="@dimen/large_margin"
-                android:text="@string/days"
+                android:text="@string/frequency_text3"
                 app:layout_constraintBottom_toBottomOf="@+id/often_text2"
                 app:layout_constraintStart_toEndOf="@+id/edit_frequency" />
 
@@ -204,7 +204,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/normal_margin"
-                android:text="@string/color_text"
+                android:text="@string/habit_color"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/radioGroup"
                 app:layout_constraintStart_toStartOf="@+id/textPriority"
@@ -227,7 +227,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/small_margin"
-                android:text="@string/habit_text"
+                android:text="@string/habit_name"
                 android:textSize="16sp"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
@@ -240,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/small_margin"
                 android:layout_marginTop="8dp"
-                android:text="@string/descrip"
+                android:text="@string/habit_description"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

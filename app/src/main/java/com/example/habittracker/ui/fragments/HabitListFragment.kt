@@ -82,6 +82,4 @@ class HabitListFragment : Fragment() {
         bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
         findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
     }
-
-
 }

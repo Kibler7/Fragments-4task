@@ -40,8 +40,8 @@ class ViewPagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         TabLayoutMediator(this.tablay, viewPager) { tab, position ->
             tab.text = when (position){
-                0 -> "Полезные"
-                else -> "Вредные"
+                0 -> getString(R.string.viewPager_goodHabits_title)
+                else -> getString(R.string.viewPager_badHabits_title)
             }
             viewPager.setCurrentItem(tab.position, true)
         }.attach()

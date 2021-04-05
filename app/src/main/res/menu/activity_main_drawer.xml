@@ -5,7 +5,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/viewPagerFragment"
+            android:id="@+id/nav_view_pager"
             android:checkable="true"
             android:title="@string/menu_habit_list" />
         <item

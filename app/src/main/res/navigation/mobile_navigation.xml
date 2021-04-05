@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/viewPagerFragment">
+    app:startDestination="@+id/nav_view_pager">
 
     <fragment
         android:id="@+id/nav_habit_list"
@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_habit_list" >
         <action
             android:id="@+id/action_nav_habit_list_to_viewPagerFragment"
-            app:destination="@id/viewPagerFragment" />
+            app:destination="@id/nav_view_pager" />
     </fragment>
 
     <fragment
@@ -35,14 +35,14 @@
         android:label="Новая привычка" >
         <action
             android:id="@+id/action_habitRedactorFragment_to_viewPagerFragment"
-            app:destination="@id/viewPagerFragment" />
+            app:destination="@id/nav_view_pager" />
         <action
             android:id="@+id/action_habitRedactorFragment_to_colorChoseDialog"
             app:destination="@id/colorChoseDialog" />
 
     </fragment>
     <fragment
-        android:id="@+id/viewPagerFragment"
+        android:id="@+id/nav_view_pager"
         android:name="com.example.habittracker.ui.fragments.ViewPagerFragment"
         android:label="Мои привычки" >
         <action

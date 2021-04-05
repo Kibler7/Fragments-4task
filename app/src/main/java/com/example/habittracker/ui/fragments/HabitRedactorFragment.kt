@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.habittracker.R
@@ -27,8 +28,6 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
         const val CHANGE_HABIT_KEY = 2
         const val REQUEST_CODE = "requestCode"
         const val COLOR = "color"
-
-
     }
 
     private var color: Int =  0
@@ -53,6 +52,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
                 saveNewData()
             }
             CHANGE_HABIT_KEY -> {
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.change_habit_title)
                 val habit = requireArguments().getSerializable(HABIT_KEY)
                 readyFab.setOnClickListener {
                     closeKeyboard()
@@ -70,15 +70,14 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
         outState.putInt(COLOR, color)
     }
 
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        color = savedInstanceState?.getInt(COLOR) ?: resources.getColor(R.color.colorGreen)
-        super.onViewStateRestored(savedInstanceState)
+    override fun sendColor(color: Int) {
+        this.color = color
     }
 
-
-
-
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        color = savedInstanceState?.getInt(COLOR) ?: color
+        super.onViewStateRestored(savedInstanceState)
+    }
 
     private fun closeKeyboard(){
         activity?.currentFocus?.let { view ->
@@ -92,7 +91,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
         edit_description.setText(habit.description)
         spinner.setSelection(habit.priority.value)
         edit_frequency.setText(habit.period.toString())
-        edit_times.setText(habit.time.toString())
+        edit_times.setText(habit.times.toString())
         when (habit.type) {
             HabitType.GOOD -> radioGroup.check(R.id.firstRadio)
             HabitType.BAD -> radioGroup.check(R.id.secondRadio)
@@ -163,16 +162,13 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
             Integer.valueOf(edit_frequency.text.toString()),
             color)
 
-        val times = resources.getQuantityString(R.plurals.plurals_times, Integer.valueOf(edit_times.text.toString()), Integer.valueOf(edit_times.text.toString()))
-        val days = resources.getQuantityString(R.plurals.plurals_days, Integer.valueOf(edit_frequency.text.toString()), Integer.valueOf(edit_frequency.text.toString()))
+        val times = resources.getQuantityString(R.plurals.plurals_times, habit.times, habit.times)
+        val days = when (habit.period) {
+            1 -> getString(R.string.word_day_text)
+            else -> resources.getQuantityString(R.plurals.plurals_days, habit.period, habit.period)
+        }
 
-        habit.stringFrequency = "Повторять $times в $days"
+        habit.stringFrequency = "${getString(R.string.word_repeat)} $times ${getString(R.string.word_in)} $days"
         return habit
     }
-
-
-    override fun sendColor(color: Int) {
-        this.color = color
-    }
-
 }
