@@ -47,9 +47,10 @@ class HabitListFragment : Fragment() {
             addHabit()
         }
 
-        val habitList = when (this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE)) {
-            HabitType.GOOD -> HabitData.goodHabits
-            else -> HabitData.badHabits
+        val habitList =
+                when (this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE)) {
+                    HabitType.GOOD -> HabitData.goodHabits
+                    else -> HabitData.badHabits
         }
         addAdapter(habitList)
     }
@@ -57,29 +58,33 @@ class HabitListFragment : Fragment() {
     private fun addAdapter(habitList: MutableList<Habit>) {
         habit_list.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter =
-                HabitAdapter(habitList) { habit ->
+            adapter = HabitAdapter(habitList)
+                { habit ->
                     changeHabit(habit)
                 }
         }
         habit_list.adapter!!.notifyDataSetChanged()
-        val habitAdapter = habit_list.adapter as HabitAdapter
-        val callback: ItemTouchHelper.Callback = NewItemTouchHelper(habitAdapter)
+        val callback: ItemTouchHelper.Callback = NewItemTouchHelper(habit_list.adapter as HabitAdapter)
         val myItemTouchHelper = ItemTouchHelper(callback)
         myItemTouchHelper.attachToRecyclerView(habit_list)
     }
+    
 
 
     private fun addHabit() {
         val bundle = Bundle()
-        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
+        bundle.apply {
+            putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
+        }
         findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
     }
 
     private fun changeHabit(habit: Habit) {
         val bundle = Bundle()
-        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
-        bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
+        bundle.apply {
+            putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
+            putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
+        }
         findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
     }
 }

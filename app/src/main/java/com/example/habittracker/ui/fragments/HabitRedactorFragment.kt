@@ -52,7 +52,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
                 saveNewData()
             }
             CHANGE_HABIT_KEY -> {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.change_habit_title)
+                changeTitle()
                 val habit = requireArguments().getSerializable(HABIT_KEY)
                 readyFab.setOnClickListener {
                     closeKeyboard()
@@ -65,6 +65,8 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
             findNavController().navigate(R.id.action_habitRedactorFragment_to_colorChoseDialog)
         }
     }
+
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(COLOR, color)
@@ -171,4 +173,10 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
         habit.stringFrequency = "${getString(R.string.word_repeat)} $times ${getString(R.string.word_in)} $days"
         return habit
     }
+
+    private fun changeTitle(){
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.change_habit_title)
+    }
+
+
 }

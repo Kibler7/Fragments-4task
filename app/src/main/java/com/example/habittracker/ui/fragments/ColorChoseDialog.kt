@@ -37,15 +37,11 @@ class ColorChoseDialog : DialogFragment(){
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        try {
-            val fragment = requireActivity().supportFragmentManager
-                    .findFragmentById(R.id.nav_host_fragment)!!
-                    .childFragmentManager.fragments[0]
-            onInputListener = fragment as OnInputListener
-        }
+        val fragment = requireActivity().supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment)!!
+                .childFragmentManager.fragments[0]
+        onInputListener = fragment as OnInputListener
 
-        catch (e: ClassCastException) {
-            Log.e("Color Picker", "onAttach: ClassCastException: " + e.message)
-        }
+
     }
 }
