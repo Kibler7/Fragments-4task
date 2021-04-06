@@ -2,7 +2,6 @@ package com.example.habittracker.habitClasses
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import java.util.*
 
 object HabitData {
 

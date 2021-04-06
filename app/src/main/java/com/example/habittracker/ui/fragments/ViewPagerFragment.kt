@@ -1,14 +1,13 @@
 package com.example.habittracker.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.habittracker.R
 import com.example.habittracker.adapters.HabitPagerAdapter
-import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.view_pager.*
