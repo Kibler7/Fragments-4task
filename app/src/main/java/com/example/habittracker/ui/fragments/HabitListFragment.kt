@@ -65,8 +65,8 @@ class HabitListFragment : Fragment() {
         }
         habit_list.adapter!!.notifyDataSetChanged()
         val callback: ItemTouchHelper.Callback = NewItemTouchHelper(habit_list.adapter as HabitAdapter)
-        val myItemTouchHelper = ItemTouchHelper(callback)
-        myItemTouchHelper.attachToRecyclerView(habit_list)
+        val newItemTouchHelper = ItemTouchHelper(callback)
+        newItemTouchHelper.attachToRecyclerView(habit_list)
     }
     
 

@@ -22,8 +22,8 @@ class ColorChoseDialog : DialogFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttons = view.findViewById<LinearLayout>(R.id.color_buttons).touchables
-        buttons.forEach {
-            it.setOnClickListener{
+        buttons.forEach { colorButton ->
+            colorButton.setOnClickListener{
                 onInputListener!!.sendColor((it as Button).currentHintTextColor)
                 dismiss()
             }

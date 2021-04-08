@@ -10,9 +10,6 @@
         android:name="com.example.habittracker.ui.fragments.HabitListFragment"
         android:label="@string/menu_habit_list"
         tools:layout="@layout/fragment_habit_list" >
-        <action
-            android:id="@+id/action_nav_habit_list_to_viewPagerFragment"
-            app:destination="@id/nav_view_pager" />
     </fragment>
 
     <fragment
@@ -25,14 +22,11 @@
         android:name="com.example.habittracker.ui.fragments.ColorChoseDialog"
         android:label="ColorChoseDialog" >
 
-        <action
-            android:id="@+id/action_colorChoseDialog_to_habitRedactorFragment"
-            app:destination="@id/habitRedactorFragment" />
     </dialog>
     <fragment
         android:id="@+id/habitRedactorFragment"
         android:name="com.example.habittracker.ui.fragments.HabitRedactorFragment"
-        android:label="Новая привычка" >
+        android:label="@string/new_habit_title" >
         <action
             android:id="@+id/action_habitRedactorFragment_to_viewPagerFragment"
             app:destination="@id/nav_view_pager" />
@@ -48,9 +42,7 @@
         <action
             android:id="@+id/action_viewPagerFragment_to_habitRedactorFragment"
             app:destination="@id/habitRedactorFragment" />
-        <action
-            android:id="@+id/action_viewPagerFragment_to_nav_habit_list"
-            app:destination="@id/nav_habit_list" />
+
     </fragment>
 
 
