@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import com.example.habittracker.R
+import com.example.habittracker.ui.fragments.redactor.HabitRedactorViewModel
 
 class ColorChoseDialog : DialogFragment(){
 

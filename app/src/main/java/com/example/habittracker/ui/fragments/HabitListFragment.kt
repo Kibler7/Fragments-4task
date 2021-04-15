@@ -14,6 +14,7 @@ import com.example.habittracker.adapters.NewItemTouchHelper
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitType
+import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 import kotlinx.android.synthetic.main.fragment_habit_list.*
 
 class HabitListFragment : Fragment() {

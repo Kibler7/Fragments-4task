@@ -1,4 +1,4 @@
-package com.example.habittracker.ui.fragments
+package com.example.habittracker.ui.fragments.redactor
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -11,15 +11,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
+import com.example.habittracker.ui.fragments.ColorChoseDialog
+import com.example.habittracker.ui.fragments.HabitListFragment
 import kotlinx.android.synthetic.main.fragment_habit_redactor.*
 
-class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
+class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
 
     companion object {
 
@@ -37,14 +42,23 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
             color_pick_fab.backgroundTintList = state
         }
 
+    private lateinit var viewModel : HabitRedactorViewModel
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory{
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return HabitRedactorViewModel() as T
+            }
+        }).get(HabitRedactorViewModel::class.java)
         return inflater.inflate(R.layout.fragment_habit_redactor, container, false)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        color = resources.getColor(R.color.colorGreen)
+        viewModel.color.observe(viewLifecycleOwner, Observer {
+            color = it ?: resources.getColor(R.color.colorGreen)
+        })
 
         when (arguments?.getInt(REQUEST_CODE)) {
             ADD_HABIT_KEY -> readyFab.setOnClickListener {
@@ -66,19 +80,8 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
         }
     }
 
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(COLOR, color)
-    }
-
     override fun sendColor(color: Int) {
-        this.color = color
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        color = savedInstanceState?.getInt(COLOR) ?: color
-        super.onViewStateRestored(savedInstanceState)
+        viewModel.changeColor(color)
     }
 
     private fun closeKeyboard(){
@@ -98,7 +101,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
             HabitType.GOOD -> radioGroup.check(R.id.firstRadio)
             HabitType.BAD -> radioGroup.check(R.id.secondRadio)
         }
-        color = habit.color
+        viewModel.changeColor(habit.color)
     }
 
     private fun validation(): Boolean {
@@ -134,11 +137,9 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
     private fun saveNewData() {
         if (validation()) {
             val habit = collectHabit()
-            HabitData.addHabit(habit)
-            val bundle = Bundle()
-            bundle.putInt(HabitListFragment.RESULT, HabitListFragment.RESULT_NEW_HABIT)
-            bundle.putSerializable(HABIT_KEY, habit)
-            findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment, bundle)
+            habit.id = HabitData.generateId()
+            viewModel.addHabit(habit)
+            findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
 
@@ -147,16 +148,14 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener{
 
         if (validation()) {
             val newHabit = collectHabit()
-            HabitData.updateHabit(newHabit, habit.id)
-            val bundle = Bundle()
-            bundle.putInt(HabitListFragment.RESULT, HabitListFragment.RESULT_CHANGED_HABIT)
-            findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment, bundle)
+            viewModel.updateHabit(habit, newHabit)
+            findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
 
     private fun collectHabit(): Habit {
         val habit = Habit(
-            HabitData.generateId(),
+            -1,
             edit_name.text.toString(), edit_description.text.toString(),
             HabitType.fromInt(radioGroup.indexOfChild(requireView().findViewById(radioGroup.checkedRadioButtonId))),
             HabitPriority.fromInt(spinner.selectedItemPosition),
