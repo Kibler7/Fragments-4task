@@ -1,5 +1,6 @@
 package com.example.habittracker.adapters
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.os.Build
@@ -11,15 +12,21 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
+import com.example.habittracker.ui.fragments.HabitList.HabitListViewModel
 
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.habit_list_item.*
 import kotlinx.android.synthetic.main.habit_list_item.view.*
 
-class HabitAdapter(private val habits: MutableList<Habit>,
-                   private val onItemClick: ((Habit) -> Unit))
-    : RecyclerView.Adapter<HabitAdapter.HabitViewHolder>(),
-    ITouchHelperAdapter {
+class HabitAdapter(
+private val  viewModel: HabitListViewModel,
+private val onItemClick: ((Habit) -> Unit),
+private val context: Context?
+) : RecyclerView.Adapter<HabitAdapter.HabitViewHolder>(),
+ITouchHelperAdapter {
+
+    private var habits: List<Habit> = viewModel.getItems() ?: emptyList()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -33,20 +40,23 @@ class HabitAdapter(private val habits: MutableList<Habit>,
         holder.bind(habits[position])
     }
 
-    override fun moveItem(startPosition: Int, nextPosition: Int){
-        val habit = habits[startPosition]
-        habits[startPosition] = habits[nextPosition]
-        habits[nextPosition] = habit
-        notifyItemMoved(startPosition,nextPosition)
+    override fun moveItem(startPosition: Int, nextPosition: Int) {
+        viewModel.habitsMoved(startPosition, nextPosition)
+        notifyItemMoved(startPosition, nextPosition)
     }
 
-    override fun deleteItem(position: Int){
-        habits.removeAt(position)
+    override fun deleteItem(position: Int) {
+        viewModel.habitDeleted(habits[position])
         notifyItemRemoved(position)
     }
 
+    fun refreshHabits(habitList: List<Habit>) {
+        habits = habitList
+        notifyDataSetChanged()
+    }
+
     inner class HabitViewHolder(override val containerView: View) :
-        RecyclerView.ViewHolder(containerView), LayoutContainer {
+            RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         init {
             itemView.setOnClickListener {

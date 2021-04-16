@@ -1,49 +1,34 @@
 package com.example.habittracker.habitClasses
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
-object HabitData {
+object HabitData : LiveData<Habit>() {
+    private val mutableHabits = MutableLiveData<LinkedHashMap<Long, Habit>>()
+    var habits: LiveData<LinkedHashMap<Long, Habit>> = mutableHabits
 
-    private var habits = mutableMapOf<Long, Habit>()
+    init {
+        mutableHabits.value = LinkedHashMap()
+    }
 
-    val goodHabits = mutableListOf<Habit>()
-    val badHabits = mutableListOf<Habit>()
+    val goodHabits: List<Habit>
+        get() = habits.value!!.filter { it -> it.value.type == HabitType.GOOD }.values.toList()
 
-    fun generateId() = habits.size.toLong()
+    val badHabits: List<Habit>
+        get() = habits.value!!.filter { it -> it.value.type == HabitType.BAD }.values.toList()
 
     fun addHabit(habit: Habit) {
-        habits[generateId()] = habit
-        when (habit.type) {
-            HabitType.GOOD -> goodHabits.add(habit)
-            HabitType.BAD -> badHabits.add(habit)
-        }
+        val newId = habits.value!!.size.toLong() ?: 1
+        habit.id = newId
+        mutableHabits.value!![newId] = habit
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     fun updateHabit(newHabit: Habit, id: Long) {
         newHabit.id = id
-        if (habits[id]!!.type != newHabit.type) {
-            habits[id] = newHabit
-            when (newHabit.type) {
-                HabitType.GOOD ->{
-                    badHabits.removeIf { it.id == id }
-                    goodHabits.add(newHabit)
-                }
-                HabitType.BAD -> {
-                    goodHabits.removeIf { it.id == id }
-                    badHabits.add(newHabit)
-                }
-            }
-
-        } else {
-            habits[id] = newHabit
-            when (newHabit.type) {
-                HabitType.GOOD -> goodHabits[goodHabits.indexOfFirst { it.id == id }] =
-                    newHabit
-                HabitType.BAD -> badHabits[badHabits.indexOfFirst { it.id == id }] = newHabit
-            }
-        }
+        mutableHabits.value!![id] = newHabit
     }
 
+    fun removeItem(habit: Habit) {
+        mutableHabits.value =  mutableHabits.value!!.filter{el -> el.key != habit.id} as LinkedHashMap<Long, Habit>
+    }
 }

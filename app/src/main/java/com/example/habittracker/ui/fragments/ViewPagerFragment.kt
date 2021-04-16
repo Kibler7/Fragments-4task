@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.example.habittracker.R
 import com.example.habittracker.adapters.HabitPagerAdapter
 import com.example.habittracker.habitClasses.HabitType
+import com.example.habittracker.ui.fragments.HabitList.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.view_pager.*
 import kotlinx.android.synthetic.main.view_pager.view.*

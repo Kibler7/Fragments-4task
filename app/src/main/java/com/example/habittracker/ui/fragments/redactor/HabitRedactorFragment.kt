@@ -17,11 +17,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
-import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
 import com.example.habittracker.ui.fragments.ColorChoseDialog
-import com.example.habittracker.ui.fragments.HabitListFragment
 import kotlinx.android.synthetic.main.fragment_habit_redactor.*
 
 class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
@@ -130,8 +128,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
 
     private fun saveNewData() {
         if (validation()) {
-            val habit = collectHabit()
-            habit.id = HabitData.generateId()
+            val habit = collectHabit(null)
             viewModel.addHabit(habit)
             findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
@@ -141,13 +138,13 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     private fun saveChangedData(habit: Habit) {
 
         if (validation()) {
-            val newHabit = collectHabit()
-            viewModel.updateHabit(habit, newHabit)
+            val newHabit = collectHabit(habit.id)
+            viewModel.updateHabit(newHabit)
             findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
 
-    private fun collectHabit(): Habit {
+    private fun collectHabit(id: Long?): Habit {
         val habit = Habit(
             -1,
             edit_name.text.toString(), edit_description.text.toString(),
