@@ -21,9 +21,6 @@ class HabitListFragment : Fragment() {
 
     companion object {
         const val HABIT_TYPE = "habit_type"
-        const val RESULT_NEW_HABIT = 0
-        const val RESULT_CHANGED_HABIT = 1
-        const val RESULT = "result"
 
         fun newInstance(habitType: HabitType) : HabitListFragment {
             val fragment = HabitListFragment()

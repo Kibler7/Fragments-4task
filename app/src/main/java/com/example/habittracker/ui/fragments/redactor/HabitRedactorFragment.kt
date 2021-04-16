@@ -32,17 +32,10 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         const val ADD_HABIT_KEY = 3
         const val CHANGE_HABIT_KEY = 2
         const val REQUEST_CODE = "requestCode"
-        const val COLOR = "color"
     }
 
-    private var color: Int =  0
-        set(value) {
-            field = value
-            val state = ColorStateList.valueOf(value)
-            color_pick_fab.backgroundTintList = state
-        }
 
-    private lateinit var viewModel : HabitRedactorViewModel
+    lateinit var viewModel : HabitRedactorViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory{
@@ -57,7 +50,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.color.observe(viewLifecycleOwner, Observer {
-            color = it ?: resources.getColor(R.color.colorGreen)
+            color_pick_fab.backgroundTintList = ColorStateList.valueOf(it ?: resources.getColor(R.color.colorGreen))
         })
 
         when (arguments?.getInt(REQUEST_CODE)) {
@@ -92,6 +85,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     }
 
     private fun updateTextForRedact(habit: Habit) {
+
         edit_name.setText(habit.name)
         edit_description.setText(habit.description)
         spinner.setSelection(habit.priority.value)
@@ -161,7 +155,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
             HabitPriority.fromInt(spinner.selectedItemPosition),
             Integer.valueOf(edit_times.text.toString()),
             Integer.valueOf(edit_frequency.text.toString()),
-            color)
+            viewModel.color.value ?: resources.getColor(R.color.colorGreen))
 
         val times = resources.getQuantityString(R.plurals.plurals_times, habit.times, habit.times)
         val days = when (habit.period) {
