@@ -1,4 +1,7 @@
 package com.example.habittracker.ui.fragments.HabitList
+
+import android.app.Instrumentation
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -19,10 +22,8 @@ import com.example.habittracker.R
 import com.example.habittracker.adapters.HabitAdapter
 import com.example.habittracker.adapters.NewItemTouchHelper
 import com.example.habittracker.habitClasses.Habit
-import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitType
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habit_list.*
@@ -98,6 +99,12 @@ class HabitListFragment : Fragment(), LifecycleOwner {
                 (habit_list.adapter as HabitAdapter).refreshHabits(it)
             }
         })
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val inst = Instrumentation()
+        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
     }
 
     private fun addAdapter() {

@@ -53,4 +53,5 @@
     <string name="word_repeat">Повторять</string>
     <string name="word_in">в</string>
     <string name="new_habit_title">Новая привычка</string>
+    <string name="filter_peek_text">Фильтры и сортировка</string>
 </resources>

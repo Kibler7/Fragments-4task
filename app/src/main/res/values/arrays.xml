@@ -2,7 +2,7 @@
 <resources>
     <string-array name="sort_parameters">
         <item> \u0020 \u0020 По дате</item>
-        <item> \u0020 \u0020 По алфавиту</item>
+        <item> \u0020 \u0020 По частоте</item>
         <item> \u0020 \u0020 По приоритету</item>
     </string-array>
 </resources>
