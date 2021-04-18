@@ -1,5 +1,6 @@
 package com.example.habittracker.ui.fragments.HabitList
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,24 +19,19 @@ import com.example.habittracker.R
 import com.example.habittracker.adapters.HabitAdapter
 import com.example.habittracker.adapters.NewItemTouchHelper
 import com.example.habittracker.habitClasses.Habit
+import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitType
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habit_list.*
-
-import kotlinx.android.synthetic.main.view_pager.*
 
 
 class HabitListFragment : Fragment(), LifecycleOwner {
 
     companion object {
         const val HABIT_TYPE = "habit_type"
-        const val RESULT_NEW_HABIT = 5
-        const val RESULT_CHANGED_HABIT = 4
-        const val RESULT = "result"
         fun newInstance(habitType: HabitType): HabitListFragment {
             val fragment = HabitListFragment()
             val bundle = Bundle()
@@ -67,8 +62,8 @@ class HabitListFragment : Fragment(), LifecycleOwner {
         addAdapter()
         observeViewModels()
         setupSort()
-        val bottom_sheet = view.findViewById<View>(R.id.bottom_sheet_behavior_id)
-        val sheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+        val bottomSheet = view.findViewById<View>(R.id.bottom_sheet_behavior_id)
+        val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         country_search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -84,15 +79,10 @@ class HabitListFragment : Fragment(), LifecycleOwner {
 
     private fun setupSort() {
         sort_spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                    adapterView: AdapterView<*>?,
-                    view: View,
-                    position: Int,
-                    l: Long
-            ) {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?,
+                    position: Int, l: Long) {
                 viewModel.sortList(position)
             }
-
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
     }
@@ -100,16 +90,12 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     private fun observeViewModels() {
         viewModel.habits.observe(viewLifecycleOwner, Observer {
             it.let {
-                (habit_list.adapter as HabitAdapter).refreshHabits(
-                        it
-                )
+                (habit_list.adapter as HabitAdapter).refreshHabits(it)
             }
         })
         viewModel.habitsFilterList.observe(viewLifecycleOwner, Observer {
             it.let {
-                (habit_list.adapter as HabitAdapter).refreshHabits(
-                        it
-                )
+                (habit_list.adapter as HabitAdapter).refreshHabits(it)
             }
         })
     }
@@ -117,14 +103,8 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     private fun addAdapter() {
         habit_list.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter =
-                    HabitAdapter(
-                            viewModel,
-                            { habit ->
-                                changeHabit(habit)
-                            },
-                            this@HabitListFragment.context
-                    )
+            adapter = HabitAdapter(viewModel, { habit -> changeHabit(habit) },
+                            this@HabitListFragment.context)
         }
         habit_list.adapter!!.notifyDataSetChanged()
         val habitAdapter = habit_list.adapter as HabitAdapter

@@ -30,6 +30,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         const val ADD_HABIT_KEY = 3
         const val CHANGE_HABIT_KEY = 2
         const val REQUEST_CODE = "requestCode"
+
     }
 
 
@@ -48,7 +49,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.color.observe(viewLifecycleOwner, Observer {
-            color_pick_fab.backgroundTintList = ColorStateList.valueOf(it ?: resources.getColor(R.color.colorGreen))
+            color_pick_fab.backgroundTintList = ColorStateList.valueOf(it)
         })
 
         when (arguments?.getInt(REQUEST_CODE)) {
@@ -75,7 +76,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         viewModel.changeColor(color)
     }
 
-    private fun closeKeyboard(){
+    fun closeKeyboard(){
         activity?.currentFocus?.let { view ->
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
@@ -128,7 +129,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
 
     private fun saveNewData() {
         if (validation()) {
-            val habit = collectHabit(null)
+            val habit = collectHabit()
             viewModel.addHabit(habit)
             findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
@@ -138,13 +139,14 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     private fun saveChangedData(habit: Habit) {
 
         if (validation()) {
-            val newHabit = collectHabit(habit.id)
-            viewModel.updateHabit(newHabit)
+            val newHabit = collectHabit()
+            newHabit.id = habit.id
+            viewModel.updateHabit(newHabit, habit)
             findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
 
-    private fun collectHabit(id: Long?): Habit {
+    private fun collectHabit(): Habit {
         val habit = Habit(
             -1,
             edit_name.text.toString(), edit_description.text.toString(),
@@ -152,15 +154,9 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
             HabitPriority.fromInt(spinner.selectedItemPosition),
             Integer.valueOf(edit_times.text.toString()),
             Integer.valueOf(edit_frequency.text.toString()),
-            viewModel.color.value ?: resources.getColor(R.color.colorGreen))
+            viewModel.color.value!!)
 
-        val times = resources.getQuantityString(R.plurals.plurals_times, habit.times, habit.times)
-        val days = when (habit.period) {
-            1 -> getString(R.string.word_day_text)
-            else -> resources.getQuantityString(R.plurals.plurals_days, habit.period, habit.period)
-        }
 
-        habit.stringFrequency = "${getString(R.string.word_repeat)} $times ${getString(R.string.word_in)} $days"
         return habit
     }
 

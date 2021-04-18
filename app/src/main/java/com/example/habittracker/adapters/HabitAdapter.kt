@@ -27,7 +27,6 @@ ITouchHelperAdapter {
 
     private var habits: List<Habit> = viewModel.getItems() ?: emptyList()
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return HabitViewHolder(inflater.inflate(R.layout.habit_list_item, parent, false))
@@ -67,7 +66,15 @@ ITouchHelperAdapter {
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         fun bind(habit: Habit) {
             containerView.habit_name.text = habit.name
-            containerView.habit_description.text = habit.stringFrequency
+
+            val times = context!!.resources.getQuantityString(R.plurals.plurals_times, habit.times, habit.times)
+            val days = when (habit.period) {
+                1 -> context.getString(R.string.word_day_text)
+                else -> context.resources.getQuantityString(R.plurals.plurals_days, habit.period, habit.period)
+            }
+
+            containerView.habit_description.text = "${context.getString(R.string.word_repeat)} $times ${context.getString(R.string.word_in)} $days"
+
             val stateList = ColorStateList.valueOf(habit.color)
             containerView.cardView.backgroundTintList = stateList
         }
