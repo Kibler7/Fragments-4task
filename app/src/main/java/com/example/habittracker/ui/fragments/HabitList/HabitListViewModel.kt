@@ -15,14 +15,17 @@ import kotlin.collections.ArrayList
 
 class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filterable {
 
-    private val mutableHabit = MutableLiveData<List<Habit>>()
-    val habits: LiveData<List<Habit>> = mutableHabit
+    private val mutableHabitList = MutableLiveData<List<Habit>>()
+    val habits: LiveData<List<Habit>> = mutableHabitList
     var habitsFilterList:  MutableLiveData<List<Habit>> = MutableLiveData()
 
     init {
-        updateListHabits()
+        updateHabitList()
         habitsFilterList.value = habits.value
-        HabitData.habits.observeForever( Observer { it.apply { updateListHabits() } })
+        HabitData.habits.observeForever( Observer {
+            it.apply { updateHabitList()
+            }
+        })
     }
 
     override fun getFilter(): Filter {
@@ -30,7 +33,7 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
                 val result = ( if (charSearch.isEmpty()) {
-                    mutableHabit.value
+                    mutableHabitList.value
                 } else {
                     val resultList = ArrayList<Habit>()
                     habits.value!!.forEach {
@@ -53,7 +56,7 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
     fun getItems() = habits.value
 
     fun habitsMoved(startPosition: Int, newPosition: Int) {
-        val habits = mutableHabit.value as MutableList
+        val habits = mutableHabitList.value as MutableList
         val habit = habits[startPosition]
         habits[startPosition] = habits[newPosition]
         habits[newPosition] = habit
@@ -65,16 +68,16 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
 
     fun sortList(position: Int){
         when(position){
-            0 -> mutableHabit.value = mutableHabit.value!!.sortedBy { it.id }
-            1 -> mutableHabit.value = mutableHabit.value!!.sortedBy { it.times }
-            2 -> mutableHabit.value = mutableHabit.value!!.sortedBy { it.priority.value }
+            0 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.id }
+            1 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.name }
+            2 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.priority.value }
         }
     }
 
-    private fun updateListHabits() {
+    private fun updateHabitList() {
         when (habitType) {
-            HabitType.GOOD -> mutableHabit.value = HabitData.goodHabits
-            HabitType.BAD -> mutableHabit.value = HabitData.badHabits
+            HabitType.GOOD -> mutableHabitList.value = HabitData.goodHabits
+            HabitType.BAD -> mutableHabitList.value = HabitData.badHabits
         }
     }
 

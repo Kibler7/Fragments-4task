@@ -22,6 +22,8 @@ object HabitData : LiveData<Habit>() {
         mutableHabits.value!![newId] = habit
     }
 
+
+
     fun updateHabit(newHabit: Habit, oldHabit : Habit) {
         newHabit.id = oldHabit.id
         mutableHabits.value!![oldHabit.id] = newHabit

@@ -1,5 +1,6 @@
 package com.example.habittracker
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -16,18 +17,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     companion object{
+        @SuppressLint("StaticFieldLeak")
         lateinit var CONTEXT: Context
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-
         CONTEXT = this
-
         val navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_view_pager, R.id.nav_about_app), drawer_layout)
         setupActionBarWithNavController(navController, appBarConfiguration)

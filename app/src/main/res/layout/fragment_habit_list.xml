@@ -13,7 +13,7 @@
         android:layout_gravity="top"
         android:layout_marginTop="@dimen/recycler_top_margin"
         android:layout_marginBottom="@dimen/color_button_width"
-        android:background="	#F8F8F8	"
+        android:background="#E8E8E8"
 
 
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -25,15 +25,22 @@
         android:layout_height="match_parent"
 
         android:layout_margin="@dimen/large_margin"
-        app:layout_anchor="@id/bottom_sheet_behavior_id"
+        app:layout_anchor="@id/bottom_sheet_cont"
         app:layout_anchorGravity="end"
         app:srcCompat="@drawable/ic_add_fab_foreground"/>
 
-    <include
-        android:id="@+id/bottom_sheet_behavior_id"
 
-        app:layout_constraintBottom_toTopOf="@id/bottom_sheet_behavior_id"
-        layout="@layout/fragment_bottom_sheet"/>
+    <FrameLayout
+        android:id="@+id/bottom_sheet_cont"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="50dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

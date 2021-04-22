@@ -11,7 +11,7 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <TextView
-        android:id="@+id/peeker"
+        android:id="@+id/peek"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="@dimen/large_margin"
@@ -33,11 +33,11 @@
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/country_search"
-        app:layout_constraintTop_toBottomOf="@+id/peeker" />
+        app:layout_constraintStart_toEndOf="@+id/habit_search_view"
+        app:layout_constraintTop_toBottomOf="@+id/peek" />
 
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/country_search"
+        android:id="@+id/habit_search_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textCursorDrawable="@null"

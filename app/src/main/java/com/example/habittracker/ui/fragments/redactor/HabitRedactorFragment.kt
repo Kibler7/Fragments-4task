@@ -19,7 +19,6 @@ import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
-import com.example.habittracker.ui.fragments.ColorChoseDialog
 import kotlinx.android.synthetic.main.fragment_habit_redactor.*
 
 class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {

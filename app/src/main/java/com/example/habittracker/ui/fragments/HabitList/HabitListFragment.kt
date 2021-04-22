@@ -1,15 +1,14 @@
 package com.example.habittracker.ui.fragments.HabitList
 
 import android.app.Instrumentation
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import androidx.appcompat.widget.SearchView
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -24,7 +23,6 @@ import com.example.habittracker.adapters.NewItemTouchHelper
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habit_list.*
 
@@ -62,30 +60,14 @@ class HabitListFragment : Fragment(), LifecycleOwner {
         add_habit_button.setOnClickListener { addHabit() }
         addAdapter()
         observeViewModels()
-        setupSort()
-        val bottomSheet = view.findViewById<View>(R.id.bottom_sheet_behavior_id)
-        val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        country_search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.filter.filter(newText)
-                return false
-            }
-        })
+        addBottomSheet()
     }
 
-    private fun setupSort() {
-        sort_spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?,
-                    position: Int, l: Long) {
-                viewModel.sortList(position)
-            }
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-        }
+    private fun addBottomSheet(){
+        val bottomSheet = BottomSheetFragment(viewModel)
+        childFragmentManager.beginTransaction()
+                .replace(R.id.bottom_sheet_cont, bottomSheet)
+                .commit()
     }
 
     private fun observeViewModels() {
@@ -101,11 +83,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
         })
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        val inst = Instrumentation()
-        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
-    }
+
 
     private fun addAdapter() {
         habit_list.apply {
@@ -121,15 +99,24 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     }
 
     private fun addHabit() {
+        closeKeyBoard()
         val bundle = Bundle()
         bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
         findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
     }
 
     private fun changeHabit(habit: Habit) {
+        closeKeyBoard()
         val bundle = Bundle()
         bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
         bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
         findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
+    }
+
+    private fun closeKeyBoard(){
+        activity?.currentFocus?.let { view ->
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 }
