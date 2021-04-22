@@ -64,7 +64,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     }
 
     private fun addBottomSheet(){
-        val bottomSheet = BottomSheetFragment(viewModel)
+        val bottomSheet = BottomSheetFragment()
         childFragmentManager.beginTransaction()
                 .replace(R.id.bottom_sheet_cont, bottomSheet)
                 .commit()
