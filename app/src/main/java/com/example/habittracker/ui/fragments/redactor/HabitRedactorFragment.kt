@@ -54,14 +54,14 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         when (arguments?.getInt(REQUEST_CODE)) {
             ADD_HABIT_KEY -> readyFab.setOnClickListener {
                 closeKeyboard()
-                saveNewData()
+                saveNewHabit()
             }
             CHANGE_HABIT_KEY -> {
                 changeTitle()
                 val habit = requireArguments().getSerializable(HABIT_KEY)
                 readyFab.setOnClickListener {
                     closeKeyboard()
-                    saveChangedData(habit as Habit)
+                    saveChangedHabit(habit as Habit)
                 }
                 updateTextForRedact(habit as Habit)
             }
@@ -126,7 +126,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     }
 
 
-    private fun saveNewData() {
+    private fun saveNewHabit() {
         if (validation()) {
             val habit = collectHabit()
             viewModel.addHabit(habit)
@@ -135,8 +135,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun saveChangedData(habit: Habit) {
-
+    private fun saveChangedHabit(habit: Habit) {
         if (validation()) {
             val newHabit = collectHabit()
             newHabit.id = habit.id

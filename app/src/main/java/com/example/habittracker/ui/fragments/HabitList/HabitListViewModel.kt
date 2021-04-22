@@ -23,7 +23,8 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
         updateHabitList()
         habitsFilterList.value = habits.value
         HabitData.habits.observeForever( Observer {
-            it.apply { updateHabitList()
+            it.apply {
+                updateHabitList()
             }
         })
     }
