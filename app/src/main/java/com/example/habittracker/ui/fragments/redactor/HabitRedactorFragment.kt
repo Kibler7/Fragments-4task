@@ -4,18 +4,23 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.habittracker.R
+import com.example.habittracker.databinding.FragmentHabitRedactorBinding
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
@@ -24,7 +29,6 @@ import kotlinx.android.synthetic.main.fragment_habit_redactor.*
 class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
 
     companion object {
-
         const val HABIT_KEY = "habit"
         const val ADD_HABIT_KEY = 3
         const val CHANGE_HABIT_KEY = 2
@@ -41,31 +45,33 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
                 return HabitRedactorViewModel() as T
             }
         }).get(HabitRedactorViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_habit_redactor, container, false)
+        val binding = DataBindingUtil.inflate<FragmentHabitRedactorBinding>(inflater,
+            R.layout.fragment_habit_redactor, container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+        return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.color.observe(viewLifecycleOwner, Observer {
-            color_pick_fab.backgroundTintList = ColorStateList.valueOf(it)
-        })
 
         when (arguments?.getInt(REQUEST_CODE)) {
             ADD_HABIT_KEY -> readyFab.setOnClickListener {
                 closeKeyboard()
-                saveNewHabit()
+                viewModel.saveNewHabit(findNavController())
             }
             CHANGE_HABIT_KEY -> {
                 changeTitle()
                 val habit = requireArguments().getSerializable(HABIT_KEY)
                 readyFab.setOnClickListener {
                     closeKeyboard()
-                    saveChangedHabit(habit as Habit)
+                    viewModel.saveChangedHabit(habit as Habit, findNavController())
                 }
-                updateTextForRedact(habit as Habit)
+                viewModel.updateHabitData(habit as Habit)
             }
         }
+        observeViewModel()
         color_pick_fab.setOnClickListener {
             findNavController().navigate(R.id.action_habitRedactorFragment_to_colorChoseDialog)
         }
@@ -75,6 +81,42 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         viewModel.changeColor(color)
     }
 
+    private fun observeViewModel(){
+        viewModel.color.observe(viewLifecycleOwner, Observer {
+            color_pick_fab.backgroundTintList = ColorStateList.valueOf(it)
+        })
+        edit_name.doOnTextChanged { text, _, _, _ ->
+            viewModel.name.value = text.toString()
+        }
+        edit_description.doOnTextChanged { text, _, _, _ ->
+            viewModel.desription.value = text.toString()
+        }
+        firstRadio.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                viewModel.type.value = HabitType.GOOD
+        }
+        secondRadio.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                viewModel.type.value = HabitType.BAD
+        }
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.getPriority(position)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        spinner.setSelection(viewModel.priority.value!!.value)
+
+
+        edit_frequency.doOnTextChanged { text, start, before, count ->
+            viewModel.frequency.value = text.toString().toInt()
+        }
+        edit_times.doOnTextChanged { text, start, before, count ->
+            viewModel.times.value = text.toString().toInt()
+        }
+    }
+
     private fun closeKeyboard(){
         activity?.currentFocus?.let { view ->
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -82,85 +124,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         }
     }
 
-    private fun updateTextForRedact(habit: Habit) {
-
-        edit_name.setText(habit.name)
-        edit_description.setText(habit.description)
-        spinner.setSelection(habit.priority.value)
-        edit_frequency.setText(habit.period.toString())
-        edit_times.setText(habit.times.toString())
-        when (habit.type) {
-            HabitType.GOOD -> radioGroup.check(R.id.firstRadio)
-            HabitType.BAD -> radioGroup.check(R.id.secondRadio)
-        }
-        viewModel.changeColor(habit.color)
-    }
-
-    private fun validation(): Boolean {
-        var allFieldsFilled = true
-
-        if (edit_name.text.isEmpty()){
-            allFieldsFilled = false
-            edit_name_text_error.visibility = View.VISIBLE
-        }
-        else
-            edit_name_text_error.visibility = View.INVISIBLE
-
-        if (radioGroup.checkedRadioButtonId == -1){
-            allFieldsFilled = false
-            radio_group_error.visibility = View.VISIBLE
-        }
-        else
-            radio_group_error.visibility = View.INVISIBLE
-        if (edit_times.text.toString().isEmpty() ||
-            edit_frequency.text.toString().isEmpty()){
-            allFieldsFilled = false
-            edit_frequency_error.visibility = View.VISIBLE
-        }
-        else
-            edit_frequency_error.visibility = View.INVISIBLE
-        if (!allFieldsFilled)
-            errorText.visibility = View.VISIBLE
-
-        return allFieldsFilled
-    }
-
-
-    private fun saveNewHabit() {
-        if (validation()) {
-            val habit = collectHabit()
-            viewModel.addHabit(habit)
-            findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun saveChangedHabit(habit: Habit) {
-        if (validation()) {
-            val newHabit = collectHabit()
-            newHabit.id = habit.id
-            viewModel.updateHabit(newHabit, habit)
-            findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
-        }
-    }
-
-    private fun collectHabit(): Habit {
-        val habit = Habit(
-            -1,
-            edit_name.text.toString(), edit_description.text.toString(),
-            HabitType.fromInt(radioGroup.indexOfChild(requireView().findViewById(radioGroup.checkedRadioButtonId))),
-            HabitPriority.fromInt(spinner.selectedItemPosition),
-            Integer.valueOf(edit_times.text.toString()),
-            Integer.valueOf(edit_frequency.text.toString()),
-            viewModel.color.value!!)
-
-
-        return habit
-    }
-
     private fun changeTitle(){
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.change_habit_title)
     }
-
-
 }

@@ -1,14 +1,20 @@
 package com.example.habittracker.ui.fragments.HabitList
 
+import android.os.Bundle
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.fragment.findNavController
+import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitType
+import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 
 import kotlin.collections.ArrayList
 
@@ -80,6 +86,19 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
             HabitType.GOOD -> mutableHabitList.value = HabitData.goodHabits
             HabitType.BAD -> mutableHabitList.value = HabitData.badHabits
         }
+    }
+
+    fun createNewHabit(navController: NavController) {
+        val bundle = Bundle()
+        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
+        navController.navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
+    }
+
+    fun changeHabit(habit: Habit, navController: NavController) {
+        val bundle = Bundle()
+        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
+        bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
+        navController.navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
     }
 
 }

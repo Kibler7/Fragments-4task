@@ -1,10 +1,7 @@
 package com.example.habittracker.ui.fragments.HabitList
 
-import android.app.Instrumentation
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +54,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        add_habit_button.setOnClickListener { addHabit() }
+        add_habit_button.setOnClickListener { viewModel.createNewHabit(findNavController()) }
         addAdapter()
         observeViewModels()
         addBottomSheet()
@@ -88,7 +85,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     private fun addAdapter() {
         habit_list.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = HabitAdapter(viewModel, { habit -> changeHabit(habit) },
+            adapter = HabitAdapter(viewModel, { habit -> viewModel.changeHabit(habit, findNavController()) },
                             this@HabitListFragment.context)
         }
         habit_list.adapter!!.notifyDataSetChanged()
@@ -98,20 +95,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
         myItemTouchHelper.attachToRecyclerView(habit_list)
     }
 
-    private fun addHabit() {
-        closeKeyBoard()
-        val bundle = Bundle()
-        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
-        findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
-    }
 
-    private fun changeHabit(habit: Habit) {
-        closeKeyBoard()
-        val bundle = Bundle()
-        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
-        bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
-        findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
-    }
 
     private fun closeKeyBoard(){
         activity?.currentFocus?.let { view ->
