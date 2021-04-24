@@ -10,9 +10,10 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
+import com.example.habittracker.App
+import com.example.habittracker.MainActivity
 import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
-import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitType
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 
@@ -28,7 +29,7 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
     init {
         updateHabitList()
         habitsFilterList.value = habits.value
-        HabitData.habits.observeForever( Observer {
+        App.database.habitDao().getAll().observeForever( Observer {
             it.apply {
                 updateHabitList()
             }
@@ -70,7 +71,7 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
     }
 
     fun habitDeleted(habit: Habit) {
-        HabitData.deleteHabit(habit)
+        App.database.habitDao().delete(habit)
     }
 
     fun sortList(position: Int){
@@ -83,8 +84,8 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
 
     private fun updateHabitList() {
         when (habitType) {
-            HabitType.GOOD -> mutableHabitList.value = HabitData.goodHabits
-            HabitType.BAD -> mutableHabitList.value = HabitData.badHabits
+            HabitType.GOOD -> mutableHabitList.value = App.database.habitDao().getHabitsByType(HabitType.GOOD)
+            HabitType.BAD -> mutableHabitList.value = App.database.habitDao().getHabitsByType(HabitType.BAD)
         }
     }
 

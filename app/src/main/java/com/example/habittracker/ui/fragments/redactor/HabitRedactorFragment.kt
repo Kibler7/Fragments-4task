@@ -111,13 +111,17 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         })
 
         spinner.setSelection(viewModel.priority.value!!.value)
-
-
         edit_frequency.doOnTextChanged { text, start, before, count ->
-            viewModel.frequency.value = text.toString().toInt()
+            if (text!!.isNotEmpty())
+                viewModel.frequency.value = text.toString().toInt()
+            else
+                viewModel.frequency.value = null
         }
         edit_times.doOnTextChanged { text, start, before, count ->
-            viewModel.times.value = text.toString().toInt()
+            if (text!!.isNotEmpty())
+                viewModel.times.value = text.toString().toInt()
+            else
+                viewModel.timesText.value = null
         }
     }
 

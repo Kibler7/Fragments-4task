@@ -1,21 +1,25 @@
 package com.example.habittracker.ui.fragments.redactor
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import com.example.habittracker.App
 import com.example.habittracker.MainActivity
 import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
-import com.example.habittracker.habitClasses.HabitData
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
-import kotlinx.android.synthetic.main.fragment_habit_redactor.*
 
 class HabitRedactorViewModel : ViewModel() {
+
+    private  var dataSize = 0
+    init {
+        App.database.habitDao().getAll().observeForever {
+            dataSize = it.size
+        }
+    }
+
 
     private var _color = MutableLiveData<Int>().apply {
         value = MainActivity.CONTEXT.resources.getColor(R.color.colorGreen)
@@ -26,21 +30,29 @@ class HabitRedactorViewModel : ViewModel() {
     var desription = MutableLiveData<String>().apply {    value = "" }
     var type = MutableLiveData<HabitType>().apply { value = null }
     var priority = MutableLiveData<HabitPriority>().apply { value = HabitPriority.HIGH }
-    var frequency = MutableLiveData<Int>().apply { value = null }
-    val frequencyText : MutableLiveData<String> = MutableLiveData<String>().apply {
-        value =  when (frequency.value) {
-            null -> ""
-            else -> frequency.toString()
+
+    val frequencyText : MutableLiveData<String> = MutableLiveData<String>()
+    var frequency = MutableLiveData<Int>().apply {
+        value = null
+        observeForever {
+            frequencyText.value = when (it) {
+                null -> ""
+                else -> it.toString()
+            }
         }
     }
 
-    var times = MutableLiveData<Int>().apply { value = null }
-    val timesText : MutableLiveData<String> = MutableLiveData<String>().apply {
-    value =  when (times.value) {
-        null -> ""
-        else -> times.toString()
+    val timesText : MutableLiveData<String> = MutableLiveData<String>()
+    var times = MutableLiveData<Int>().apply {
+        value = null
+        observeForever {
+            timesText.value = when (it) {
+                null -> ""
+                else -> it.toString()
+            }
         }
     }
+
 
     fun getPriority(position : Int){
         when (position){
@@ -109,7 +121,8 @@ class HabitRedactorViewModel : ViewModel() {
     fun saveNewHabit(navController: NavController) {
         if (validation()) {
             val habit = collectHabit()
-            HabitData.addHabit(habit)
+            habit.id = dataSize.toLong()
+            App.database.habitDao().insert(habit)
             navController.navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
@@ -119,7 +132,7 @@ class HabitRedactorViewModel : ViewModel() {
         if (validation()) {
             val newHabit = collectHabit()
             newHabit.id = habit.id
-            HabitData.updateHabit(newHabit, habit)
+            App.database.habitDao().updateHabit(newHabit)
             navController.navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
