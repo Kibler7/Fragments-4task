@@ -105,6 +105,10 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+        viewModel.priority.observe(viewLifecycleOwner, Observer {
+            if (spinner.selectedItemPosition != it.value)
+                spinner.setSelection(it.value)
+        })
 
         spinner.setSelection(viewModel.priority.value!!.value)
 

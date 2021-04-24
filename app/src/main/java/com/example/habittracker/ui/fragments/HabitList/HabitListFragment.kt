@@ -54,7 +54,9 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        add_habit_button.setOnClickListener { viewModel.createNewHabit(findNavController()) }
+        add_habit_button.setOnClickListener {
+            closeKeyBoard()
+            viewModel.createNewHabit(findNavController()) }
         addAdapter()
         observeViewModels()
         addBottomSheet()
@@ -85,7 +87,10 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     private fun addAdapter() {
         habit_list.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = HabitAdapter(viewModel, { habit -> viewModel.changeHabit(habit, findNavController()) },
+            adapter = HabitAdapter(viewModel, {
+                    habit ->
+                closeKeyBoard()
+                viewModel.changeHabit(habit, findNavController()) },
                             this@HabitListFragment.context)
         }
         habit_list.adapter!!.notifyDataSetChanged()
