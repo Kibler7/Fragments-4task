@@ -14,10 +14,10 @@ import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 
-import kotlin.collections.ArrayList
 
+class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filterable {
 
-class HabitListViewModel(private val habitType: HabitType,private val navController: NavController) : ViewModel(), Filterable {
+    lateinit var navController: NavController
 
     private val mutableHabitList = MutableLiveData<List<Habit>>()
     val habits: LiveData<List<Habit>> = mutableHabitList

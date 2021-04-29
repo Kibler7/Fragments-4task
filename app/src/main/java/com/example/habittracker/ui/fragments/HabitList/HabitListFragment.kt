@@ -45,9 +45,10 @@ class HabitListFragment : Fragment(), LifecycleOwner {
         val habitType = this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitListViewModel(habitType as HabitType, findNavController()) as T
+                return HabitListViewModel(habitType as HabitType) as T
             }
         }).get(HabitListViewModel::class.java)
+        viewModel.navController = findNavController()
         return inflater.inflate(R.layout.fragment_habit_list, container, false)
     }
 
@@ -70,9 +71,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     private fun observeViewModels() {
         viewModel.habits.observe(viewLifecycleOwner, Observer {
             it.let {
-                (habit_list.adapter as HabitAdapter).refreshHabits(
-                        it
-                )
+                (habit_list.adapter as HabitAdapter).refreshHabits(it)
             }
         })
     }

@@ -42,9 +42,10 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory{
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitRedactorViewModel(findNavController()) as T
+                return HabitRedactorViewModel() as T
             }
         }).get(HabitRedactorViewModel::class.java)
+        viewModel.navController = findNavController()
         val binding = DataBindingUtil.inflate<FragmentHabitRedactorBinding>(inflater,
             R.layout.fragment_habit_redactor, container, false)
         binding.lifecycleOwner = this

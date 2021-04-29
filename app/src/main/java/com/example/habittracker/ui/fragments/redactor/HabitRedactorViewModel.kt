@@ -11,9 +11,10 @@ import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
 
-class HabitRedactorViewModel(private val navController: NavController) : ViewModel() {
+class HabitRedactorViewModel: ViewModel() {
 
 
+    lateinit var navController: NavController
     private val repository = HabitRepository()
     private var _color = MutableLiveData<Int>().apply {
         value = MainActivity.CONTEXT.resources.getColor(R.color.colorGreen)
