@@ -6,39 +6,46 @@
     android:layout_gravity="center_horizontal"
     android:layout_marginStart="@dimen/normal_margin"
     android:layout_marginLeft="@dimen/normal_margin"
-    android:layout_marginTop="@dimen/large_margin"
-    android:layout_marginEnd="@dimen/normal_margin"
+    android:layout_marginTop="32dp"
+    android:layout_marginEnd="@dimen/large_margin"
     android:layout_marginRight="@dimen/normal_margin"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingLeft="16dp">
 
-    <TextView
-        android:id="@+id/habit_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginLeft="@dimen/normal_margin"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
-        app:layout_constraintTop_toTopOf="@+id/cardView" />
-
-    <TextView
-        android:id="@+id/habit_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginLeft="@dimen/normal_margin"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:textStyle="normal"
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/habit_name" />
+        app:layout_constraintTop_toTopOf="@+id/cardView">
+
+        <TextView
+            android:id="@+id/habit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="@dimen/small_margin"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/habit_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="@dimen/small_margin" />
+    </androidx.cardview.widget.CardView>
+
+    />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="4dp"
-        android:layout_height="51dp"
+        android:layout_height="59dp"
         app:cardBackgroundColor="@color/colorDeepPurple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -42,7 +42,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory{
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitRedactorViewModel() as T
+                return HabitRedactorViewModel(findNavController()) as T
             }
         }).get(HabitRedactorViewModel::class.java)
         val binding = DataBindingUtil.inflate<FragmentHabitRedactorBinding>(inflater,
@@ -59,18 +59,19 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         when (arguments?.getInt(REQUEST_CODE)) {
             ADD_HABIT_KEY -> readyFab.setOnClickListener {
                 closeKeyboard()
-                viewModel.saveNewHabit(findNavController())
+                viewModel.saveNewHabit()
             }
             CHANGE_HABIT_KEY -> {
                 changeTitle()
                 val habit = requireArguments().getSerializable(HABIT_KEY)
                 readyFab.setOnClickListener {
                     closeKeyboard()
-                    viewModel.saveChangedHabit(habit as Habit, findNavController())
+                    viewModel.saveChangedHabit(habit as Habit)
                 }
                 viewModel.updateHabitData(habit as Habit)
             }
         }
+        sendToViewModel()
         observeViewModel()
         color_pick_fab.setOnClickListener {
             findNavController().navigate(R.id.action_habitRedactorFragment_to_colorChoseDialog)
@@ -81,16 +82,14 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         viewModel.changeColor(color)
     }
 
-    private fun observeViewModel(){
-        viewModel.color.observe(viewLifecycleOwner, Observer {
-            color_pick_fab.backgroundTintList = ColorStateList.valueOf(it)
-        })
+    private fun sendToViewModel(){
         edit_name.doOnTextChanged { text, _, _, _ ->
             viewModel.name.value = text.toString()
         }
         edit_description.doOnTextChanged { text, _, _, _ ->
             viewModel.desription.value = text.toString()
         }
+
         firstRadio.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 viewModel.type.value = HabitType.GOOD
@@ -99,18 +98,13 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
             if (isChecked)
                 viewModel.type.value = HabitType.BAD
         }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 viewModel.getPriority(position)
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        viewModel.priority.observe(viewLifecycleOwner, Observer {
-            if (spinner.selectedItemPosition != it.value)
-                spinner.setSelection(it.value)
-        })
-
-        spinner.setSelection(viewModel.priority.value!!.value)
         edit_frequency.doOnTextChanged { text, start, before, count ->
             if (text!!.isNotEmpty())
                 viewModel.frequency.value = text.toString().toInt()
@@ -123,6 +117,13 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
             else
                 viewModel.timesText.value = null
         }
+    }
+
+    private fun observeViewModel(){
+        viewModel.color.observe(viewLifecycleOwner, Observer {
+            color_pick_fab.backgroundTintList = ColorStateList.valueOf(it)
+        })
+        spinner.setSelection(viewModel.priority.value!!.value)
     }
 
     private fun closeKeyboard(){

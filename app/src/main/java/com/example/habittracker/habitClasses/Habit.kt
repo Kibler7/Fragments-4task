@@ -7,9 +7,12 @@ import androidx.room.TypeConverters
 import java.io.Serializable
 @Entity
 @TypeConverters(com.example.habittracker.habitClasses.TypeConverter::class, PriorityConverter::class)
-data class Habit(@PrimaryKey var id: Long, val name: String, val description: String,val type: HabitType,
+data class Habit(val name: String, val description: String,val type: HabitType,
                  val priority: HabitPriority,  val times: Int, val period: Int, var color : Int)
-    : Serializable
+    : Serializable{
+    @PrimaryKey(autoGenerate = true)
+    var id: Long? = null
+    }
 
 class TypeConverter {
     @TypeConverter

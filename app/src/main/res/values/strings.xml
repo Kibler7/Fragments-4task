@@ -1,7 +1,7 @@
 <resources>
 
     <string name="nav_header_title">For DoubletApp</string>
-    <string name="nav_header_subtitle">Домашнее задание №5</string>
+    <string name="nav_header_subtitle">Домашнее задание №6</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -21,8 +21,8 @@
     <string name="color_choose_text">Выберите цвет</string>
     <string name="habit_color">Цвет:</string>
     <string name="about_app1"> Автор: Артем Васильев</string>
-    <string name="about_app2"> https://github.com/Kibler7/Fragments-4task</string>
-    <string name="about_app3"> Для пятой Дз</string>
+    <string name="about_app2"> https://github.com/Kibler7/Fragments-6task</string>
+    <string name="about_app3"> Для шестого Дз</string>
     <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>

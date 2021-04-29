@@ -8,10 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.navigation.fragment.findNavController
-import com.example.habittracker.App
-import com.example.habittracker.MainActivity
+import com.example.habittracker.HabitData.HabitRepository
 import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
@@ -20,19 +17,16 @@ import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 import kotlin.collections.ArrayList
 
 
-class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filterable {
+class HabitListViewModel(private val habitType: HabitType,private val navController: NavController) : ViewModel(), Filterable {
 
     private val mutableHabitList = MutableLiveData<List<Habit>>()
     val habits: LiveData<List<Habit>> = mutableHabitList
-    var habitsFilterList:  MutableLiveData<List<Habit>> = MutableLiveData()
+    private var repository = HabitRepository()
+
 
     init {
-        updateHabitList()
-        habitsFilterList.value = habits.value
-        App.database.habitDao().getAll().observeForever( Observer {
-            it.apply {
-                updateHabitList()
-            }
+        repository.habits.observeForever(Observer { list ->
+            mutableHabitList.value = list.filter { it.type == habitType }
         })
     }
 
@@ -40,23 +34,15 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
-                val result = ( if (charSearch.isEmpty()) {
-                    mutableHabitList.value
-                } else {
-                    val resultList = ArrayList<Habit>()
-                    habits.value!!.forEach {
-                        if (it.name.startsWith(charSearch))
-                            resultList.add(it)
-                    }
-                    resultList.toList()
-                })
-                val filterResults = FilterResults()
-                filterResults.values = result
-                return filterResults
+                val result = FilterResults()
+                if (charSearch.isEmpty())
+                    result.values = mutableHabitList.value
+                result.values = mutableHabitList.value!!.filter { it.name.startsWith(charSearch) }
+                return result
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                habitsFilterList.value = results?.values as List<Habit>?
+                mutableHabitList.value = results?.values as List<Habit>?
             }
         }
     }
@@ -71,7 +57,7 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
     }
 
     fun habitDeleted(habit: Habit) {
-        App.database.habitDao().delete(habit)
+        repository.deleteHabit(habit)
     }
 
     fun sortList(position: Int){
@@ -82,20 +68,14 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
         }
     }
 
-    private fun updateHabitList() {
-        when (habitType) {
-            HabitType.GOOD -> mutableHabitList.value = App.database.habitDao().getHabitsByType(HabitType.GOOD)
-            HabitType.BAD -> mutableHabitList.value = App.database.habitDao().getHabitsByType(HabitType.BAD)
-        }
-    }
 
-    fun createNewHabit(navController: NavController) {
+    fun createNewHabit() {
         val bundle = Bundle()
         bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
         navController.navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
     }
 
-    fun changeHabit(habit: Habit, navController: NavController) {
+    fun changeHabit(habit: Habit) {
         val bundle = Bundle()
         bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
         bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)

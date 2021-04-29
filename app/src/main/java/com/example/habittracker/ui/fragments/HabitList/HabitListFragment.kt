@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.habittracker.R
 import com.example.habittracker.adapters.HabitAdapter
 import com.example.habittracker.adapters.NewItemTouchHelper
-import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
-import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habit_list.*
 
@@ -47,7 +45,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
         val habitType = this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitListViewModel(habitType as HabitType) as T
+                return HabitListViewModel(habitType as HabitType, findNavController()) as T
             }
         }).get(HabitListViewModel::class.java)
         return inflater.inflate(R.layout.fragment_habit_list, container, false)
@@ -56,7 +54,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         add_habit_button.setOnClickListener {
             closeKeyBoard()
-            viewModel.createNewHabit(findNavController()) }
+            viewModel.createNewHabit() }
         addAdapter()
         observeViewModels()
         addBottomSheet()
@@ -72,12 +70,9 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     private fun observeViewModels() {
         viewModel.habits.observe(viewLifecycleOwner, Observer {
             it.let {
-                (habit_list.adapter as HabitAdapter).refreshHabits(it)
-            }
-        })
-        viewModel.habitsFilterList.observe(viewLifecycleOwner, Observer {
-            it.let {
-                (habit_list.adapter as HabitAdapter).refreshHabits(it)
+                (habit_list.adapter as HabitAdapter).refreshHabits(
+                        it
+                )
             }
         })
     }
@@ -90,7 +85,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
             adapter = HabitAdapter(viewModel, {
                     habit ->
                 closeKeyBoard()
-                viewModel.changeHabit(habit, findNavController()) },
+                viewModel.changeHabit(habit) },
                             this@HabitListFragment.context)
         }
         habit_list.adapter!!.notifyDataSetChanged()

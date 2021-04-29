@@ -25,6 +25,8 @@ private val context: Context?
 ) : RecyclerView.Adapter<HabitAdapter.HabitViewHolder>(),
 ITouchHelperAdapter {
 
+
+
     private var habits: List<Habit> = viewModel.getItems() ?: emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {

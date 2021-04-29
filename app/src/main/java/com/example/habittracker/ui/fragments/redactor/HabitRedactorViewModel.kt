@@ -4,23 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.example.habittracker.App
+import com.example.habittracker.HabitData.HabitRepository
 import com.example.habittracker.MainActivity
 import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
 
-class HabitRedactorViewModel : ViewModel() {
-
-    private  var dataSize = 0
-    init {
-        App.database.habitDao().getAll().observeForever {
-            dataSize = it.size
-        }
-    }
+class HabitRedactorViewModel(private val navController: NavController) : ViewModel() {
 
 
+    private val repository = HabitRepository()
     private var _color = MutableLiveData<Int>().apply {
         value = MainActivity.CONTEXT.resources.getColor(R.color.colorGreen)
     }
@@ -102,14 +96,13 @@ class HabitRedactorViewModel : ViewModel() {
         else
             isEnteredFrequency.value = true
 
-        if (!allFieldsFilled)
-            isNeededErrorText.value = true
+        isNeededErrorText.value = !allFieldsFilled
 
         return allFieldsFilled
     }
 
     private fun collectHabit(): Habit {
-        return Habit(-1, name.value!!, desription.value!!, type.value!!,
+        return Habit(name.value!!, desription.value!!, type.value!!,
                 priority.value!!, times.value!!, frequency.value!!, color.value!!)
     }
 
@@ -118,21 +111,20 @@ class HabitRedactorViewModel : ViewModel() {
     }
 
 
-    fun saveNewHabit(navController: NavController) {
+    fun saveNewHabit() {
         if (validation()) {
             val habit = collectHabit()
-            habit.id = dataSize.toLong()
-            App.database.habitDao().insert(habit)
+            repository.addHabit(habit)
             navController.navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
 
 
-    fun saveChangedHabit(habit: Habit, navController: NavController) {
+    fun saveChangedHabit(habit: Habit) {
         if (validation()) {
             val newHabit = collectHabit()
             newHabit.id = habit.id
-            App.database.habitDao().updateHabit(newHabit)
+            repository.updateHabit(newHabit)
             navController.navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
         }
     }
