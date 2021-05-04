@@ -45,7 +45,6 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
                 return HabitRedactorViewModel() as T
             }
         }).get(HabitRedactorViewModel::class.java)
-        viewModel.navController = findNavController()
         val binding = DataBindingUtil.inflate<FragmentHabitRedactorBinding>(inflater,
             R.layout.fragment_habit_redactor, container, false)
         binding.lifecycleOwner = this
@@ -60,14 +59,21 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
         when (arguments?.getInt(REQUEST_CODE)) {
             ADD_HABIT_KEY -> readyFab.setOnClickListener {
                 closeKeyboard()
-                viewModel.saveNewHabit()
+                if (viewModel.validation()){
+                    viewModel.saveNewHabit()
+                    findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
+                }
             }
             CHANGE_HABIT_KEY -> {
                 changeTitle()
                 val habit = requireArguments().getSerializable(HABIT_KEY)
                 readyFab.setOnClickListener {
                     closeKeyboard()
-                    viewModel.saveChangedHabit(habit as Habit)
+                    if (viewModel.validation()) {
+                        viewModel.saveChangedHabit(habit as Habit)
+                        findNavController().navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
+                    }
+
                 }
                 viewModel.updateHabitData(habit as Habit)
             }

@@ -14,7 +14,6 @@ import com.example.habittracker.habitClasses.HabitType
 class HabitRedactorViewModel: ViewModel() {
 
 
-    lateinit var navController: NavController
     private val repository = HabitRepository()
     private var _color = MutableLiveData<Int>().apply {
         value = MainActivity.CONTEXT.resources.getColor(R.color.colorGreen)
@@ -73,7 +72,7 @@ class HabitRedactorViewModel: ViewModel() {
     }
 
 
-    private fun validation(): Boolean {
+    fun validation(): Boolean {
         var allFieldsFilled = true
 
         if (name.value!!.isEmpty()){
@@ -113,20 +112,14 @@ class HabitRedactorViewModel: ViewModel() {
 
 
     fun saveNewHabit() {
-        if (validation()) {
-            val habit = collectHabit()
-            repository.addHabit(habit)
-            navController.navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
-        }
+        val habit = collectHabit()
+        repository.addHabit(habit)
     }
 
 
     fun saveChangedHabit(habit: Habit) {
-        if (validation()) {
-            val newHabit = collectHabit()
-            newHabit.id = habit.id
-            repository.updateHabit(newHabit)
-            navController.navigate(R.id.action_habitRedactorFragment_to_viewPagerFragment)
-        }
+        val newHabit = collectHabit()
+        newHabit.id = habit.id
+        repository.updateHabit(newHabit)
     }
 }

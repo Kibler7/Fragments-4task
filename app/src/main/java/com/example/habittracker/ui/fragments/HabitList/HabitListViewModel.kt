@@ -17,44 +17,45 @@ import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 
 class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filterable {
 
-    lateinit var navController: NavController
 
     private val mutableHabitList = MutableLiveData<List<Habit>>()
     val habits: LiveData<List<Habit>> = mutableHabitList
     private var repository = HabitRepository()
+    private var notFilteredList = mutableHabitList.value
 
 
     init {
-        repository.habits.observeForever(Observer { list ->
-            mutableHabitList.value = list.filter { it.type == habitType }
-        })
+        onCreate()
     }
 
+    private lateinit var observer: Observer<List<Habit>>
+    private fun onCreate() {
+        observer = Observer {
+            mutableHabitList.value = it.filter { el -> el.type == habitType }
+            notFilteredList = mutableHabitList.value
+        }
+        repository.habits.observeForever(observer)
+    }
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val charSearch = constraint.toString()
-                val result = FilterResults()
-                if (charSearch.isEmpty())
-                    result.values = mutableHabitList.value
-                result.values = mutableHabitList.value!!.filter { it.name.startsWith(charSearch) }
-                return result
+                val searchString = constraint.toString()
+                val searchResult = FilterResults()
+                if (searchString.isEmpty())
+                    searchResult.values = notFilteredList
+                else
+                    searchResult.values = mutableHabitList.value!!.filter { it.name.contains(searchString) }
+                return searchResult
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                mutableHabitList.value = results?.values as List<Habit>?
+                mutableHabitList.value = results?.values as? List<Habit>?
             }
         }
     }
 
-    fun getItems() = habits.value
+    fun getHabits() = habits.value
 
-    fun habitsMoved(startPosition: Int, newPosition: Int) {
-        val habits = mutableHabitList.value as MutableList
-        val habit = habits[startPosition]
-        habits[startPosition] = habits[newPosition]
-        habits[newPosition] = habit
-    }
 
     fun habitDeleted(habit: Habit) {
         repository.deleteHabit(habit)
@@ -67,19 +68,4 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
             2 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.priority.value }
         }
     }
-
-
-    fun createNewHabit() {
-        val bundle = Bundle()
-        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
-        navController.navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
-    }
-
-    fun changeHabit(habit: Habit) {
-        val bundle = Bundle()
-        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
-        bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
-        navController.navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
-    }
-
 }

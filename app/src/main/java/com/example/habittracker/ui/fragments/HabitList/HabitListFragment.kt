@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.habittracker.R
 import com.example.habittracker.adapters.HabitAdapter
 import com.example.habittracker.adapters.NewItemTouchHelper
+import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
+import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habit_list.*
 
@@ -48,14 +50,13 @@ class HabitListFragment : Fragment(), LifecycleOwner {
                 return HabitListViewModel(habitType as HabitType) as T
             }
         }).get(HabitListViewModel::class.java)
-        viewModel.navController = findNavController()
         return inflater.inflate(R.layout.fragment_habit_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         add_habit_button.setOnClickListener {
             closeKeyBoard()
-            viewModel.createNewHabit() }
+            createNewHabit() }
         addAdapter()
         observeViewModels()
         addBottomSheet()
@@ -84,7 +85,7 @@ class HabitListFragment : Fragment(), LifecycleOwner {
             adapter = HabitAdapter(viewModel, {
                     habit ->
                 closeKeyBoard()
-                viewModel.changeHabit(habit) },
+                changeHabit(habit) },
                             this@HabitListFragment.context)
         }
         habit_list.adapter!!.notifyDataSetChanged()
@@ -101,5 +102,18 @@ class HabitListFragment : Fragment(), LifecycleOwner {
             val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+
+    private fun createNewHabit() {
+        val bundle = Bundle()
+        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.ADD_HABIT_KEY)
+        findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
+    }
+
+    private fun changeHabit(habit: Habit) {
+        val bundle = Bundle()
+        bundle.putInt(HabitRedactorFragment.REQUEST_CODE, HabitRedactorFragment.CHANGE_HABIT_KEY)
+        bundle.putSerializable(HabitRedactorFragment.HABIT_KEY, habit)
+        findNavController().navigate(R.id.action_viewPagerFragment_to_habitRedactorFragment, bundle)
     }
 }

@@ -2,7 +2,6 @@ package com.example.habittracker.adapters
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.os.Build
 
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.ui.fragments.HabitList.HabitListViewModel
 
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.habit_list_item.*
 import kotlinx.android.synthetic.main.habit_list_item.view.*
 
 class HabitAdapter(
@@ -27,7 +25,7 @@ ITouchHelperAdapter {
 
 
 
-    private var habits: List<Habit> = viewModel.getItems() ?: emptyList()
+    private var habits: List<Habit> = viewModel.getHabits() ?: emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -41,10 +39,7 @@ ITouchHelperAdapter {
         holder.bind(habits[position])
     }
 
-    override fun moveItem(startPosition: Int, nextPosition: Int) {
-        viewModel.habitsMoved(startPosition, nextPosition)
-        notifyItemMoved(startPosition, nextPosition)
-    }
+
 
     override fun deleteItem(position: Int) {
         viewModel.habitDeleted(habits[position])

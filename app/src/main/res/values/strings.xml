@@ -21,7 +21,7 @@
     <string name="color_choose_text">Выберите цвет</string>
     <string name="habit_color">Цвет:</string>
     <string name="about_app1"> Автор: Артем Васильев</string>
-    <string name="about_app2"> https://github.com/Kibler7/Fragments-6task</string>
+    <string name="about_app2">https://github.com/Kibler7/My-Habits/tree/6homeTask</string>
     <string name="about_app3"> Для шестого Дз</string>
     <string-array name="priorities">
         <item>Высокий</item>
