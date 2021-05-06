@@ -10,8 +10,14 @@ import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitPriority
 import com.example.habittracker.habitClasses.HabitType
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class HabitRedactorViewModel: ViewModel() {
+class HabitRedactorViewModel(): ViewModel(), CoroutineScope {
+
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job + CoroutineExceptionHandler{_, e -> throw e}
 
 
     private val repository = HabitRepository()
@@ -111,15 +117,20 @@ class HabitRedactorViewModel: ViewModel() {
     }
 
 
-    fun saveNewHabit() {
-        val habit = collectHabit()
-        repository.addHabit(habit)
+    fun saveNewHabit() = launch {
+        withContext(Dispatchers.IO) {
+            val habit = collectHabit()
+            delay(1000)
+            repository.addHabit(habit)
+        }
     }
 
 
-    fun saveChangedHabit(habit: Habit) {
-        val newHabit = collectHabit()
-        newHabit.id = habit.id
-        repository.updateHabit(newHabit)
+    fun saveChangedHabit(habit: Habit) = launch {
+        withContext(Dispatchers.IO) {
+            val newHabit = collectHabit()
+            newHabit.id = habit.id
+            repository.updateHabit(newHabit)
+        }
     }
 }

@@ -13,15 +13,21 @@ import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 
-class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filterable {
+class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filterable, CoroutineScope {
 
 
     private val mutableHabitList = MutableLiveData<List<Habit>>()
     val habits: LiveData<List<Habit>> = mutableHabitList
     private var repository = HabitRepository()
     private var notFilteredList = mutableHabitList.value
+
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job + CoroutineExceptionHandler{_, e -> throw e}
 
 
     init {
@@ -36,6 +42,8 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
         }
         repository.habits.observeForever(observer)
     }
+
+
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -56,16 +64,25 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
 
     fun getHabits() = habits.value
 
-
-    fun habitDeleted(habit: Habit) {
-        repository.deleteHabit(habit)
+    override fun onCleared() {
+        super.onCleared()
+        repository.habits.removeObserver(observer)
+        coroutineContext.cancelChildren()
     }
 
-    fun sortList(position: Int){
-        when(position){
-            0 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.id }
-            1 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.name }
-            2 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.priority.value }
+
+    fun habitDeleted(habit: Habit) = launch {
+        withContext(Dispatchers.IO) {
+            repository.deleteHabit(habit)
         }
     }
+
+    fun sortList(position: Int) = launch {
+            when(position) {
+                0 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.id }
+                1 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.name }
+                2 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.priority.value }
+            }
+    }
+
 }

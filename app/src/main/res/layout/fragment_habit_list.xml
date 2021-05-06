@@ -13,7 +13,7 @@
         android:layout_gravity="top"
         android:layout_marginTop="@dimen/recycler_top_margin"
         android:layout_marginBottom="@dimen/color_button_width"
-        android:background="#E8E8E8"
+        android:background="#F5F5F5"
 
 
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
