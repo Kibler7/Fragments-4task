@@ -120,7 +120,7 @@ class HabitRedactorViewModel(): ViewModel(), CoroutineScope {
     fun saveNewHabit() = launch {
         withContext(Dispatchers.IO) {
             val habit = collectHabit()
-            delay(1000)
+            delay(500)
             repository.addHabit(habit)
         }
     }
@@ -130,6 +130,7 @@ class HabitRedactorViewModel(): ViewModel(), CoroutineScope {
         withContext(Dispatchers.IO) {
             val newHabit = collectHabit()
             newHabit.id = habit.id
+            delay(500)
             repository.updateHabit(newHabit)
         }
     }
