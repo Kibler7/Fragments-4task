@@ -69,7 +69,7 @@ class HabitRedactorViewModel(): ViewModel(), CoroutineScope {
 
     fun updateHabitData(habit: Habit) {
         name.value = habit.name
-        desription.value = habit.description
+        desription.value = habit.description.dropLast(1)
         priority.value = habit.priority
         frequency.value = habit.period
         times.value = habit.times

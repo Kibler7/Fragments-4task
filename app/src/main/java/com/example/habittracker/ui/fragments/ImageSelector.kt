@@ -29,7 +29,7 @@ class ImageSelector : DialogFragment() {
         image_save_button.setOnClickListener {
             val reference = edit_reference.text.toString()
             Glide.with(MainActivity.CONTEXT).load(reference)
-                .circleCrop().placeholder(R.mipmap.ic_heat_image).into(userImage)
+                .circleCrop().placeholder(R.mipmap.ic_launcher).into(userImage)
             dismiss()
         }
     }
