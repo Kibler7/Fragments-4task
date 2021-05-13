@@ -1,18 +1,14 @@
 package com.example.habittracker.ui.fragments.HabitList
 
-import android.os.Bundle
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import com.example.habittracker.HabitData.HabitRepository
-import com.example.habittracker.R
 import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.habitClasses.HabitType
-import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -37,10 +33,10 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
     private lateinit var observer: Observer<List<Habit>>
     private fun onCreate() {
         observer = Observer {
-            mutableHabitList.value = it.filter { el -> el.type == habitType }
+            mutableHabitList.value = it.filter {  it.type == habitType }
             notFilteredList = mutableHabitList.value
         }
-        repository.habits.observeForever(observer)
+        HabitRepository.localHabits.observeForever(observer)
     }
 
 
@@ -66,7 +62,7 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
 
     override fun onCleared() {
         super.onCleared()
-        repository.habits.removeObserver(observer)
+        HabitRepository.localHabits.removeObserver(observer)
         coroutineContext.cancelChildren()
     }
 
@@ -78,11 +74,13 @@ class HabitListViewModel(private val habitType: HabitType) : ViewModel(), Filter
     }
 
     fun sortList(position: Int) = launch {
-            when(position) {
-                0 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.id }
-                1 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.name }
-                2 -> mutableHabitList.value = mutableHabitList.value!!.sortedBy { it.priority.value }
+        withContext(Dispatchers.Default) {
+            when (position) {
+                0 -> mutableHabitList.postValue(mutableHabitList.value!!.sortedBy { it.id })
+                1 -> mutableHabitList.postValue(mutableHabitList.value!!.sortedBy { it.name })
+                2 -> mutableHabitList.postValue(mutableHabitList.value!!.sortedBy { it.priority.value })
             }
+        }
     }
 
 }

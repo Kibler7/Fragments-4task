@@ -12,5 +12,8 @@ enum class HabitPriority(val value: Int) {
             else -> "Низкий"
         }
     }
+    companion object {
+        fun fromInt(value: Int) = values().first { it.value == value }
+    }
 
 }

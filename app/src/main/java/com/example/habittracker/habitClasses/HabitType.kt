@@ -11,4 +11,8 @@ enum class HabitType(val value: Int) {
         else
             "Полезная"
     }
+
+    companion object {
+        fun fromInt(value: Int) = values().first { it.value == value }
+    }
 }

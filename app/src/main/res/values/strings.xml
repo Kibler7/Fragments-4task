@@ -1,7 +1,7 @@
 <resources>
 
     <string name="nav_header_title">For DoubletApp</string>
-    <string name="nav_header_subtitle">Домашнее задание №7</string>
+    <string name="nav_header_subtitle">Домашнее задание №8</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -54,4 +54,6 @@
     <string name="word_in">в</string>
     <string name="new_habit_title">Новая привычка</string>
     <string name="filter_peek_text">Фильтры и сортировка</string>
+    <string name="error_name">имя уже занято</string>
+    <string name="select_image_button_text">Выбрать</string>
 </resources>

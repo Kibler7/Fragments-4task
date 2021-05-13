@@ -14,8 +14,16 @@ interface HabitDao {
     @Query("SELECT * FROM habit")
     fun getAll() : LiveData<List<Habit>>
 
-    @Insert
-    fun insert(habit: Habit)
+    @Query("SELECT  * FROM Habit WHERE name LIKE :name")
+    fun getByName(name: String): Habit?
+
+    @Query("SELECT * FROM Habit WHERE uid LIKE :uid")
+    fun getById(uid : String?): Habit?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(habit: Habit) : Long
+
+
 
     @Delete
     fun delete(habit: Habit)

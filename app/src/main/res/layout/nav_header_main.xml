@@ -13,9 +13,10 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/user_image"
         android:layout_width="90dp"
         android:layout_height="90dp"
+        android:onClick="onImageClick"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/normal_margin"
         app:srcCompat="@mipmap/ic_head_image" />

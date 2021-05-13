@@ -3,6 +3,7 @@ package com.example.habittracker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -12,8 +13,10 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.room.Database
 import androidx.room.Room
 import com.example.habittracker.HabitData.AppDataBase
+import com.example.habittracker.ui.fragments.ImageSelector
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +38,10 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_view_pager, R.id.nav_about_app), drawer_layout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         nav_view.setupWithNavController(navController)
+        val image = nav_view.getHeaderView(0).findViewById<ImageView>(R.id.user_image)
+        image.setOnClickListener {
+            ImageSelector().show(supportFragmentManager, "imageSelect")
+       }
     }
 
 
@@ -44,4 +51,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
+
 }
