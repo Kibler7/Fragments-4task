@@ -9,18 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.entities.Habit
 import com.example.habittracker.R
-import com.example.habittracker.habitClasses.Habit
 import com.example.habittracker.ui.fragments.HabitList.HabitListViewModel
 
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.habit_list_item.view.*
 
 class HabitAdapter(
-private val  viewModel: HabitListViewModel,
-private val onItemClick: ((Habit) -> Unit),
-private val context: Context?,
-private val onDoneClick: ((Habit) -> Unit)
+    private val  viewModel: HabitListViewModel,
+    private val onItemClick: ((Habit) -> Unit),
+    private val context: Context?,
+    private val onDoneClick: ((Habit) -> Unit)
 ) : RecyclerView.Adapter<HabitAdapter.HabitViewHolder>(),
 ITouchHelperAdapter {
 

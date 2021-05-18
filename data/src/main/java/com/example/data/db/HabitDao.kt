@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.domain.entities.Habit
 import com.example.domain.entities.PriorityConverter
+import com.example.domain.entities.TypeConverter
 
 @Suppress("AndroidUnresolvedRoomSqlReference")
 @Dao

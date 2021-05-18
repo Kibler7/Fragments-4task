@@ -1,9 +1,8 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-android-extensions'
-    id 'kotlin-kapt'
-}
+apply plugin: 'com.android.library'
+apply plugin:'kotlin-android'
+apply plugin:'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
 
 android {
 
@@ -15,7 +14,6 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.habittracker"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1

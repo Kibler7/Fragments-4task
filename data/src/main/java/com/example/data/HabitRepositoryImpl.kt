@@ -63,7 +63,7 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
     private fun deleteFromServer(habit: Habit) =
         GlobalScope.launch(Dispatchers.IO) {
             if (habit.uid != null) {
-                retrofitService.deleteHabit(habit)
+                retrofitService.deleteHabit(habit).awaitResponse()
             }
         }
 
@@ -72,8 +72,6 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
             val habit = dataBase.habitDao().getById(it.uid)
             if (habit == null)
                 dataBase.habitDao().insert(it)
-            else
-                dataBase.habitDao().updateHabit(it)
 
         }
     }

@@ -78,7 +78,7 @@
                     <RadioButton
                         android:id="@+id/firstRadio"
                         android:layout_width="match_parent"
-                        android:checked="@{viewModel.type == HabitType}"
+                        android:checked="@{viewModel.type == HabitType.GOOD}"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/normal_margin"
                         android:text="@string/first_option" />

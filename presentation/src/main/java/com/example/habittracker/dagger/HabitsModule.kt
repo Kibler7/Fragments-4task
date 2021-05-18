@@ -66,15 +66,7 @@ class HabitsModule {
     @Provides
     fun providesRetrofit(): Retrofit {
         val okHttpClient = OkHttpClient().newBuilder()
-            .addInterceptor {
-                val request = it.request()
-                var response = it.proceed(request)
-                if (!response.isSuccessful){
-                    Thread.sleep(500)
-                    response = it.proceed(request)
-                }
-                response
-            }.build()
+            .build()
 
         val gSon = GsonBuilder().registerTypeAdapter(Habit::class.java, HabitTypeAdapter()).create()
         val retrofit = Retrofit.Builder().client(okHttpClient)
