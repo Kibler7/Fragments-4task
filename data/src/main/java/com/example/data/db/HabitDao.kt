@@ -2,13 +2,14 @@ package com.example.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.domain.entities.DatesConverter
 import com.example.domain.entities.Habit
 import com.example.domain.entities.PriorityConverter
 import com.example.domain.entities.TypeConverter
 
 @Suppress("AndroidUnresolvedRoomSqlReference")
 @Dao
-@TypeConverters(TypeConverter::class, PriorityConverter::class)
+@TypeConverters(TypeConverter::class, PriorityConverter::class, DatesConverter::class)
 interface HabitDao {
 
     @Query("SELECT * FROM habit")

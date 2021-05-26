@@ -2,6 +2,7 @@ package com.example.domain
 
 import androidx.lifecycle.LiveData
 import com.example.domain.entities.Habit
+import kotlinx.coroutines.Job
 
 public interface HabitRepository {
 
@@ -13,6 +14,6 @@ public interface HabitRepository {
 
     fun getLocalData() : LiveData<List<Habit>>
 
-    fun getRemoteData() : List<Habit>?
+    fun postHabit(habit : Habit, date : Int) : Job
 
 }

@@ -26,6 +26,8 @@ import com.example.habittracker.adapters.NewItemTouchHelper
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_habit_list.*
+import java.util.*
+import javax.inject.Inject
 
 
 class HabitListFragment : Fragment(), LifecycleOwner {
@@ -41,7 +43,8 @@ class HabitListFragment : Fragment(), LifecycleOwner {
         }
     }
 
-    private lateinit var viewModel: HabitListViewModel
+    @Inject
+    lateinit var viewModel: HabitListViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -49,18 +52,10 @@ class HabitListFragment : Fragment(), LifecycleOwner {
             savedInstanceState: Bundle?
     ): View? {
 
-        val habitsUseCase = (requireActivity().application as App)
-            .applicationComponent.getGetHabitsUseCase()
-        val deleteHabitUseCase = (requireActivity().application as App)
-            .applicationComponent.getDeleteHabitUseCase()
-
-        val habitType = this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE)
-        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitListViewModel(habitsUseCase, deleteHabitUseCase,
-                    habitType as HabitType) as T
-            }
-        }).get(HabitListViewModel::class.java)
+        val habitType =
+            this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE) as HabitType
+        (requireActivity().application as App).createViewModelHabitListComponent(this, habitType)
+        (requireActivity().application as App).listViewModelComponent.injectFragment(this)
         return inflater.inflate(R.layout.fragment_habit_list, container, false)
     }
 
@@ -96,16 +91,42 @@ class HabitListFragment : Fragment(), LifecycleOwner {
             adapter = HabitAdapter(viewModel, {
                     habit ->closeKeyBoard()
                 changeHabit(habit) }, this@HabitListFragment.context, {
-                        val text = "Вы сделали это!"
-                        val toast = Toast.makeText(MainActivity.CONTEXT, text, Toast.LENGTH_SHORT)
-                        toast.setGravity(Gravity.BOTTOM, 0, 30)
-                        toast.show()})
+                        post(it)})
         }
         habit_list.adapter!!.notifyDataSetChanged()
         val habitAdapter = habit_list.adapter as HabitAdapter
         val callback: ItemTouchHelper.Callback = NewItemTouchHelper(habitAdapter)
         val myItemTouchHelper = ItemTouchHelper(callback)
         myItemTouchHelper.attachToRecyclerView(habit_list)
+    }
+
+    private fun post(habit: Habit){
+        viewModel.postHabit(habit)
+        val countsLeft = habit.times - habit.getCountDone(Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) - 1
+        val text = if (habit.type == HabitType.GOOD){
+            if (countsLeft > 0)
+                "${getString(R.string.good_toast1)} ${
+                    resources.getQuantityString(
+                        R.plurals.plurals_times,
+                        countsLeft,
+                        countsLeft
+                    )}"
+            else
+                getString(R.string.good_toast2)
+        } else{
+            if (countsLeft > 0)
+                "${getString(R.string.bad_toast1)} ${
+                    resources.getQuantityString(
+                        R.plurals.plurals_times,
+                        countsLeft,
+                        countsLeft
+                    )}"
+            else
+                getString(R.string.bad_toast2)
+        }
+        val toast = Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.BOTTOM, 0, 30)
+        toast.show()
     }
 
 

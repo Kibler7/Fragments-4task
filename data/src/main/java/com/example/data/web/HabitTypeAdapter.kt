@@ -21,6 +21,9 @@ class HabitTypeAdapter : TypeAdapter<Habit>() {
             name("color").value(value?.color ?: 0)
             name("date").value( value?.date)
         }
+        out.name("done_dates").beginArray()
+        value!!.doneDates.forEach{ out.value(it)}
+        out.endArray()
         if (value!!.uid != null)
             out.name("uid").value(value.uid)
         out.endObject()
@@ -36,6 +39,8 @@ class HabitTypeAdapter : TypeAdapter<Habit>() {
         var priority = 0
         var frequency = 0
         var count = 0
+        var date = 0
+        var done_dates = mutableListOf<Int>()
         var color = 0
         var uid = ""
 
@@ -57,8 +62,10 @@ class HabitTypeAdapter : TypeAdapter<Habit>() {
                 "color" -> color = `in`.nextInt()
                 "frequency" -> frequency = `in`.nextInt()
                 "uid" -> uid = `in`.nextString()
-                "date" -> `in`.nextInt()
+                "date" -> date = `in`.nextInt()
                 "done_dates" -> {`in`.beginArray()
+                    while (`in`.peek() != JsonToken.END_ARRAY)
+                        done_dates.add(`in`.nextInt())
                     `in`.endArray()}
             }
         }
@@ -68,6 +75,8 @@ class HabitTypeAdapter : TypeAdapter<Habit>() {
         val habit = Habit(habitName,description, HabitType.fromInt(type),
             HabitPriority.fromInt(priority), count,frequency,color)
         habit.uid = uid
+        habit.date = date
+        habit.doneDates = done_dates
 
         return habit
     }

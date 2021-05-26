@@ -10,18 +10,22 @@ import com.example.domain.entities.Habit
 import com.example.domain.entities.HabitType
 import com.example.domain.useCases.DeleteHabitUseCase
 import com.example.domain.useCases.GetHabitsUseCase
+import com.example.domain.useCases.PostHabitsUseCase
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 
 class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
                          private val deleteHabitUseCase: DeleteHabitUseCase,
+                         private val postHabitsUseCase: PostHabitsUseCase,
                          private val habitType: HabitType) : ViewModel(), Filterable, CoroutineScope {
 
 
     private val mutableHabitList = MutableLiveData<List<Habit>>()
     val habits: LiveData<List<Habit>> = mutableHabitList
     private var notFilteredList = mutableHabitList.value
+
 
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
@@ -68,6 +72,11 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
         coroutineContext.cancelChildren()
     }
 
+    fun postHabit(habit: Habit)= launch{
+        withContext(Dispatchers.IO) {
+            postHabitsUseCase.postHabit(habit, Calendar.getInstance().get(Calendar.DAY_OF_YEAR))
+        }
+    }
 
     fun habitDeleted(habit: Habit) = launch {
         withContext(Dispatchers.IO) {

@@ -1,5 +1,6 @@
 package com.example.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.data.db.AppDataBase
 import com.example.data.web.SearchRepository
@@ -41,7 +42,14 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
     }
 
     override fun getLocalData(): LiveData<List<Habit>> =  localHabits
-    override fun getRemoteData(): List<Habit>? = remoteHabits
+    override fun postHabit(habit: Habit, date: Int) = GlobalScope.launch {
+        withContext(Dispatchers.IO){
+            dataBase.habitDao().updateHabit(habit)
+            retrofitService.postHabit(habit, date).awaitResponse()
+
+        }
+    }
+
 
     private fun  getDataFromServer() = GlobalScope.launch {
         withContext(Dispatchers.IO){

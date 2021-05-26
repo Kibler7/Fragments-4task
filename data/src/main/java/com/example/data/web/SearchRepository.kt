@@ -22,4 +22,11 @@ class SearchRepository(private val apiService: HabitService) {
         return apiService.deleteHabit(token,
             LinkedTreeMap<String, String>().also { it["uid"] = habit.uid })
     }
+
+    fun postHabit(habit: Habit, date : Int): Call<Void>{
+        return apiService.postHabit(token, LinkedTreeMap<String, Any>().also {
+            it["date"] = date
+            it["habit_uid"] = habit.uid
+        })
+    }
 }

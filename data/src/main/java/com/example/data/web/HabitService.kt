@@ -15,4 +15,7 @@ interface HabitService {
 
     @HTTP(method = "DELETE", path = "api/habit", hasBody = true)
     fun deleteHabit(@Header("Authorization") token: String, @Body uid : LinkedTreeMap<String, String>) : Call<Void>
+
+    @POST("api/habit_done")
+    fun postHabit(@Header("Authorization") token: String, @Body uidAndDate: LinkedTreeMap<String, Any>) : Call<Void>
 }

@@ -21,6 +21,7 @@ class HabitRedactorViewModel(private val addHabitUseCase: AddHabitUseCase,
         get() = Dispatchers.Main + job + CoroutineExceptionHandler{_, e -> throw e}
 
 
+
     // getRemoteHabits в вьюмодели
     private var _color = MutableLiveData<Int>().apply {
         value = MainActivity.CONTEXT.resources.getColor(R.color.colorGreen)
@@ -31,6 +32,7 @@ class HabitRedactorViewModel(private val addHabitUseCase: AddHabitUseCase,
     var desription = MutableLiveData<String>().apply {    value = "" }
     var type = MutableLiveData<HabitType>().apply { value = null }
     var priority = MutableLiveData<HabitPriority>().apply { value = HabitPriority.HIGH }
+    private var doneDates = mutableListOf<Int>()
 
     val frequencyText : MutableLiveData<String> = MutableLiveData<String>()
     var frequency = MutableLiveData<Int>().apply {
@@ -76,6 +78,7 @@ class HabitRedactorViewModel(private val addHabitUseCase: AddHabitUseCase,
         times.value = habit.times
         type.value = habit.type
         changeColor(habit.color)
+        doneDates = habit.doneDates
     }
 
 
@@ -109,8 +112,12 @@ class HabitRedactorViewModel(private val addHabitUseCase: AddHabitUseCase,
     }
 
     private fun collectHabit(): Habit {
-        return Habit(name.value!!, desription.value!! + " ", type.value!!,
-                priority.value!!, times.value!!, frequency.value!!, color.value!!)
+        val habit = Habit(
+            name.value!!, desription.value!! + " ", type.value!!,
+            priority.value!!, times.value!!, frequency.value!!, color.value!!
+        )
+        habit.doneDates = doneDates
+        return habit
     }
 
     fun changeColor(newColor : Int) {

@@ -9,10 +9,7 @@ import com.example.data.web.HabitTypeAdapter
 import com.example.data.web.SearchRepository
 import com.example.domain.HabitRepository
 import com.example.domain.entities.Habit
-import com.example.domain.useCases.AddHabitUseCase
-import com.example.domain.useCases.DeleteHabitUseCase
-import com.example.domain.useCases.GetHabitsUseCase
-import com.example.domain.useCases.UpdateHabitUseCase
+import com.example.domain.useCases.*
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -28,6 +25,11 @@ class HabitsModule {
     @Provides
     fun provideAddHabitUseCase(habitRepository: HabitRepository) : AddHabitUseCase{
         return AddHabitUseCase(habitRepository, Dispatchers.IO)
+    }
+
+    @Provides
+    fun providePostHabitUseCase(habitRepository: HabitRepository) : PostHabitsUseCase{
+        return PostHabitsUseCase(habitRepository, Dispatchers.IO)
     }
 
     @Provides

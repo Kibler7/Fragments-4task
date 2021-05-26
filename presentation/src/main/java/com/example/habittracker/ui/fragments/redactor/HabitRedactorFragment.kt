@@ -24,6 +24,7 @@ import com.example.habittracker.App
 import com.example.habittracker.R
 import com.example.habittracker.databinding.FragmentHabitRedactorBinding
 import kotlinx.android.synthetic.main.fragment_habit_redactor.*
+import javax.inject.Inject
 
 class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
 
@@ -36,22 +37,13 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     }
 
 
+    @Inject
     lateinit var viewModel : HabitRedactorViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val addHabitUseCase = (requireActivity().application as App)
-            .applicationComponent.getAddHabitUseCase()
-        val updateHabitUseCase =(requireActivity().application as App)
-            .applicationComponent.getUpdateHabitUseCase()
-
-
-        viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory{
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitRedactorViewModel(addHabitUseCase,
-                    updateHabitUseCase) as T
-            }
-        }).get(HabitRedactorViewModel::class.java)
+        (requireActivity().application as App).createViewModelRedactorComponent(this)
+        (requireActivity().application as App).viewModelComponent.injectFragment2(this)
         val binding = DataBindingUtil.inflate<FragmentHabitRedactorBinding>(inflater,
             R.layout.fragment_habit_redactor, container, false)
         binding.lifecycleOwner = this
