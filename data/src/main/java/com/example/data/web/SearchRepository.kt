@@ -1,6 +1,6 @@
 package com.example.data.web
 
-import com.example.domain.entities.Habit
+import com.example.data.HabitMap
 import com.google.gson.internal.LinkedTreeMap
 import retrofit2.Call
 
@@ -10,20 +10,20 @@ class SearchRepository(private val apiService: HabitService) {
         const val token = "dfd9911d-be5c-4ce8-b46f-dce2a45147bd"
     }
 
-    fun getHabits(): Call<ArrayList<Habit>> {
+    fun getHabits(): Call<ArrayList<HabitMap>> {
         return apiService.getHabitsList(token)
     }
 
-    fun putHabit(habit: Habit): Call<LinkedTreeMap<String, String>> {
+    fun putHabit(habit: HabitMap): Call<LinkedTreeMap<String, String>> {
         return apiService.putHabit(token, habit)
     }
 
-    fun deleteHabit(habit: Habit): Call<Void> {
+    fun deleteHabit(habit: HabitMap): Call<Void> {
         return apiService.deleteHabit(token,
             LinkedTreeMap<String, String>().also { it["uid"] = habit.uid })
     }
 
-    fun postHabit(habit: Habit, date : Int): Call<Void>{
+    fun postHabit(habit: HabitMap, date : Int): Call<Void>{
         return apiService.postHabit(token, LinkedTreeMap<String, Any>().also {
             it["date"] = date
             it["habit_uid"] = habit.uid

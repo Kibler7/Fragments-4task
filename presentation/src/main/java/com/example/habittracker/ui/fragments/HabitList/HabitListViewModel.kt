@@ -2,10 +2,8 @@ package com.example.habittracker.ui.fragments.HabitList
 
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import com.example.domain.entities.Habit
 import com.example.domain.entities.HabitType
 import com.example.domain.useCases.DeleteHabitUseCase
@@ -23,7 +21,7 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
 
 
     private val mutableHabitsData = MutableLiveData<List<Habit>>()
-    val habitsData: LiveData<List<Habit>> = MutableLiveData<List<Habit>>()
+    val habitsData: LiveData<List<Habit>> = mutableHabitsData
     private var notFilteredList = mutableHabitsData.value
 
 
@@ -42,12 +40,12 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
             mutableHabitsData.value = it.filter {  it.type == habitType }
             notFilteredList = mutableHabitsData.value
         }
-        getHabitsUseCase.getHabit().observeForever(observer)
+        getHabitsUseCase.getHabit().asLiveData().observeForever(observer)
     }
 
     override fun onCleared() {
         super.onCleared()
-        getHabitsUseCase.getHabit().removeObserver(observer)
+        getHabitsUseCase.getHabit().asLiveData().removeObserver(observer)
         coroutineContext.cancelChildren()
     }
 

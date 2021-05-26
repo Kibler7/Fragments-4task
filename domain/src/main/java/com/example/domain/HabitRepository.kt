@@ -1,8 +1,8 @@
 package com.example.domain
 
-import androidx.lifecycle.LiveData
 import com.example.domain.entities.Habit
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 
 public interface HabitRepository {
 
@@ -12,7 +12,7 @@ public interface HabitRepository {
 
     fun updateHabit(habit: Habit)
 
-    fun getLocalData() : LiveData<List<Habit>>
+    fun getLocalData() : Flow<List<Habit>>
 
     fun postHabit(habit : Habit, date : Int) : Job
 

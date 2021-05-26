@@ -2,6 +2,7 @@ package com.example.habittracker.dagger
 
 import android.content.Context
 import androidx.room.Room
+import com.example.data.HabitMap
 import com.example.data.HabitRepositoryImpl
 import com.example.data.db.AppDataBase
 import com.example.data.web.HabitService
@@ -70,7 +71,7 @@ class HabitsModule {
         val okHttpClient = OkHttpClient().newBuilder()
             .build()
 
-        val gSon = GsonBuilder().registerTypeAdapter(Habit::class.java, HabitTypeAdapter()).create()
+        val gSon = GsonBuilder().registerTypeAdapter(HabitMap::class.java, HabitTypeAdapter()).create()
 
         return Retrofit.Builder().client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gSon))

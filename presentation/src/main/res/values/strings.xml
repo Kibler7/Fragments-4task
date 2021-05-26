@@ -1,7 +1,7 @@
 <resources>
 
     <string name="nav_header_title">For DoubletApp</string>
-    <string name="nav_header_subtitle">Домашнее задание №8</string>
+    <string name="nav_header_subtitle">Домашнее задание №9</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -22,8 +22,7 @@
     <string name="habit_color">Цвет:</string>
     <string name="about_app1"> Автор: Артем Васильев</string>
     <string name="about_app2">https://github.com/Kibler7/My-Habits/tree/6homeTask</string>
-    <string name="about_app3"> Для восьмого Дз</string>
-    <string-array name="priorities">
+    <string name="about_app3"> Для девятого Дз</string>    <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>
         <item>Низкий</item>

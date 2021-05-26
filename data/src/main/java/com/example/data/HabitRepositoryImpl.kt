@@ -1,13 +1,13 @@
 package com.example.data
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import com.example.data.db.AppDataBase
 import com.example.data.web.SearchRepository
 import com.example.domain.HabitRepository
 import com.example.domain.entities.Habit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
@@ -16,7 +16,7 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
                           private val retrofitService: SearchRepository) : HabitRepository {
 
     private var localHabits = dataBase.habitDao().getAll()
-    private var remoteHabits : List<Habit>? = null
+    private var remoteHabits : List<HabitMap>? = null
 
     init {
         getDataFromServer()
@@ -24,28 +24,32 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
 
 
     override fun addHabit(habit: Habit) {
-        val newId = dataBase.habitDao().insert(habit)
-        habit.id = newId
-        sendToServer(habit)
+        val habitMap = HabitMap.toMap(habit)
+        val newId = dataBase.habitDao().insert(habitMap)
+        habitMap.id = newId
+        sendToServer(habitMap)
     }
 
 
     override fun deleteHabit(habit: Habit) {
-        dataBase.habitDao().delete(habit)
-        deleteFromServer(habit)
+        val habitMap = HabitMap.toMap(habit)
+        dataBase.habitDao().delete(habitMap)
+        deleteFromServer(habitMap)
     }
 
     override fun updateHabit(habit: Habit) {
         habit.date++
-        dataBase.habitDao().updateHabit(habit)
-        sendToServer(habit)
+        val habitMap = HabitMap.toMap(habit)
+        dataBase.habitDao().updateHabit(habitMap)
+        sendToServer(habitMap)
     }
 
-    override fun getLocalData(): LiveData<List<Habit>> =  localHabits
+    override fun getLocalData(): Flow<List<Habit>> =  localHabits.map { it.map { HabitMap.toHabit(it) } }
     override fun postHabit(habit: Habit, date: Int) = GlobalScope.launch {
         withContext(Dispatchers.IO){
-            dataBase.habitDao().updateHabit(habit)
-            retrofitService.postHabit(habit, date).awaitResponse()
+            val habitMap = HabitMap.toMap(habit)
+            dataBase.habitDao().updateHabit(habitMap)
+            retrofitService.postHabit(habitMap, date).awaitResponse()
 
         }
     }
@@ -59,7 +63,7 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
     }
 
 
-    private fun sendToServer(habit: Habit) =
+    private fun sendToServer(habit: HabitMap) =
         GlobalScope.launch(Dispatchers.IO) {
             val response = retrofitService.putHabit(habit).awaitResponse()
             if (response.isSuccessful){
@@ -68,16 +72,16 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
             }
         }
 
-    private fun deleteFromServer(habit: Habit) =
+    private fun deleteFromServer(habit: HabitMap) =
         GlobalScope.launch(Dispatchers.IO) {
             if (habit.uid != null) {
                 retrofitService.deleteHabit(habit).awaitResponse()
             }
         }
 
-    private fun insertFromServerToDB(habits: List<Habit>?) {
+    private fun insertFromServerToDB(habits: List<HabitMap>?) {
         habits?.forEach {
-            val habit = dataBase.habitDao().getById(it.uid)
+            val habit = dataBase.habitDao().getByName(it.name)
             if (habit == null)
                 dataBase.habitDao().insert(it)
 

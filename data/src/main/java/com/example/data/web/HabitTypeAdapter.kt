@@ -1,5 +1,6 @@
 package com.example.data.web
 
+import com.example.data.HabitMap
 import com.example.domain.entities.Habit
 import com.example.domain.entities.HabitPriority
 import com.example.domain.entities.HabitType
@@ -8,8 +9,8 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 
-class HabitTypeAdapter : TypeAdapter<Habit>() {
-    override fun write(out: JsonWriter?, value: Habit?) {
+class HabitTypeAdapter : TypeAdapter<HabitMap>() {
+    override fun write(out: JsonWriter?, value: HabitMap?) {
         out!!.beginObject()
         out.apply {
             name("title").value(value?.name)
@@ -29,10 +30,9 @@ class HabitTypeAdapter : TypeAdapter<Habit>() {
         out.endObject()
     }
 
-    // разбить в 2 модеали
 
 
-    override fun read(`in`: JsonReader?): Habit {
+    override fun read(`in`: JsonReader?): HabitMap {
         var habitName = ""
         var description = ""
         var type = 0
@@ -72,12 +72,12 @@ class HabitTypeAdapter : TypeAdapter<Habit>() {
 
         `in`?.endObject()
 
-        val habit = Habit(habitName,description, HabitType.fromInt(type),
+        val habitMap = HabitMap(habitName,description, HabitType.fromInt(type),
             HabitPriority.fromInt(priority), count,frequency,color)
-        habit.uid = uid
-        habit.date = date
-        habit.doneDates = done_dates
+        habitMap.uid = uid
+        habitMap.date = date
+        habitMap.doneDates = done_dates
 
-        return habit
+        return habitMap
     }
 }
