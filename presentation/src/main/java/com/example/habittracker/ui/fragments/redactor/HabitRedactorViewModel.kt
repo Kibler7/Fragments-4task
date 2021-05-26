@@ -21,8 +21,6 @@ class HabitRedactorViewModel(private val addHabitUseCase: AddHabitUseCase,
         get() = Dispatchers.Main + job + CoroutineExceptionHandler{_, e -> throw e}
 
 
-
-    // getRemoteHabits в вьюмодели
     private var _color = MutableLiveData<Int>().apply {
         value = MainActivity.CONTEXT.resources.getColor(R.color.colorGreen)
     }

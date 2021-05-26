@@ -11,15 +11,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.entities.Habit
 import com.example.domain.entities.HabitType
 import com.example.habittracker.App
-import com.example.habittracker.MainActivity
 import com.example.habittracker.R
 import com.example.habittracker.adapters.HabitAdapter
 import com.example.habittracker.adapters.NewItemTouchHelper
@@ -71,12 +68,12 @@ class HabitListFragment : Fragment(), LifecycleOwner {
     private fun addBottomSheet(){
         val bottomSheet = BottomSheetFragment()
         childFragmentManager.beginTransaction()
-                .replace(R.id.bottom_sheet_cont, bottomSheet)
+                .replace(R.id.bottom_sheet_fragment, bottomSheet)
                 .commit()
     }
 
     private fun observeViewModels() {
-        viewModel.habits.observe(viewLifecycleOwner, Observer {
+        viewModel.habitsData.observe(viewLifecycleOwner, Observer {
             it.let {
                 (habit_list.adapter as HabitAdapter).refreshHabits(it)
             }

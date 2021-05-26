@@ -22,9 +22,9 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
                          private val habitType: HabitType) : ViewModel(), Filterable, CoroutineScope {
 
 
-    private val mutableHabitList = MutableLiveData<List<Habit>>()
-    val habits: LiveData<List<Habit>> = mutableHabitList
-    private var notFilteredList = mutableHabitList.value
+    private val mutableHabitsData = MutableLiveData<List<Habit>>()
+    val habitsData: LiveData<List<Habit>> = MutableLiveData<List<Habit>>()
+    private var notFilteredList = mutableHabitsData.value
 
 
     private val job = SupervisorJob()
@@ -39,10 +39,16 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
     private lateinit var observer: Observer<List<Habit>>
     private fun onCreate() {
         observer = Observer {
-            mutableHabitList.value = it.filter {  it.type == habitType }
-            notFilteredList = mutableHabitList.value
+            mutableHabitsData.value = it.filter {  it.type == habitType }
+            notFilteredList = mutableHabitsData.value
         }
         getHabitsUseCase.getHabit().observeForever(observer)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        getHabitsUseCase.getHabit().removeObserver(observer)
+        coroutineContext.cancelChildren()
     }
 
 
@@ -54,23 +60,18 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
                 if (searchString.isEmpty())
                     searchResult.values = notFilteredList
                 else
-                    searchResult.values = mutableHabitList.value!!.filter { it.name.contains(searchString) }
+                    searchResult.values = mutableHabitsData.value!!.filter { it.name.contains(searchString) }
                 return searchResult
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                mutableHabitList.value = results?.values as? List<Habit>?
+                mutableHabitsData.value = results?.values as? List<Habit>?
             }
         }
     }
 
-    fun getHabits() = habits.value
+    fun getHabits() = habitsData.value
 
-    override fun onCleared() {
-        super.onCleared()
-        getHabitsUseCase.getHabit().removeObserver(observer)
-        coroutineContext.cancelChildren()
-    }
 
     fun postHabit(habit: Habit)= launch{
         withContext(Dispatchers.IO) {
@@ -87,9 +88,9 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
     fun sortList(position: Int) = launch {
         withContext(Dispatchers.Default) {
             when (position) {
-                0 -> mutableHabitList.postValue(mutableHabitList.value!!.sortedBy { it.id })
-                1 -> mutableHabitList.postValue(mutableHabitList.value!!.sortedBy { it.name })
-                2 -> mutableHabitList.postValue(mutableHabitList.value!!.sortedBy { it.priority.value })
+                0 -> mutableHabitsData.postValue(mutableHabitsData.value!!.sortedBy { it.id })
+                1 -> mutableHabitsData.postValue(mutableHabitsData.value!!.sortedBy { it.name })
+                2 -> mutableHabitsData.postValue(mutableHabitsData.value!!.sortedBy { it.priority.value })
             }
         }
     }

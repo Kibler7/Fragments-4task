@@ -13,17 +13,10 @@ class NewItemTouchHelper(private val adapter: HabitAdapter) : ItemTouchHelper.Ca
 
     }
 
-    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-        return false
-    }
-
-    override fun isLongPressDragEnabled(): Boolean {
-        return false
-    }
-
-    override fun isItemViewSwipeEnabled(): Boolean {
-        return true
-    }
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder): Boolean = false
+    override fun isLongPressDragEnabled(): Boolean = false
+    override fun isItemViewSwipeEnabled(): Boolean = true
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val pos = viewHolder.adapterPosition

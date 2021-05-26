@@ -26,12 +26,11 @@ class App : Application() {
         super.onCreate()
         applicationComponent = DaggerApplicationComponent.builder()
             .contextModule(ContextModule(this)).build()
-
-
     }
 
     fun createViewModelHabitListComponent(habitListFragment: HabitListFragment, habitType: HabitType){
-        listViewModelComponent = applicationComponent.getListViewModelComponent().requestModule(
+        listViewModelComponent = applicationComponent.
+            getListViewModelComponent().requestModule(
             HabitListViewModelModule(habitListFragment,habitType)
         )!!.build()!!
     }

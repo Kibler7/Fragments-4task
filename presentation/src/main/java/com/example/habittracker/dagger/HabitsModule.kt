@@ -71,21 +71,19 @@ class HabitsModule {
             .build()
 
         val gSon = GsonBuilder().registerTypeAdapter(Habit::class.java, HabitTypeAdapter()).create()
-        val retrofit = Retrofit.Builder().client(okHttpClient)
+
+        return Retrofit.Builder().client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gSon))
             .baseUrl("https://droid-test-server.doubletapp.ru/").build()
-
-        return retrofit
     }
 
     @Singleton
     @Provides
-    fun provideDataBase(context : Context) : AppDataBase{
-        val database = Room.databaseBuilder(
+    fun provideDataBase(context: Context): AppDataBase {
+        return Room.databaseBuilder(
             context,
-            AppDataBase::class.java, "database")
-            .build()
-        return database
+            AppDataBase::class.java, "database"
+        ).build()
     }
 
 

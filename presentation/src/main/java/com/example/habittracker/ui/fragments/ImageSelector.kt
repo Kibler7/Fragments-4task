@@ -28,7 +28,7 @@ class ImageSelector : DialogFragment() {
         val userImage = navView!!.getHeaderView(0).findViewById<ImageView>(R.id.user_image)
         image_save_button.setOnClickListener {
             val reference = edit_reference.text.toString()
-            Glide.with(MainActivity.CONTEXT).load(reference)
+            Glide.with(requireContext()).load(reference)
                 .circleCrop().placeholder(R.mipmap.ic_launcher).into(userImage)
             dismiss()
         }

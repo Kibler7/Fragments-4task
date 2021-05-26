@@ -22,14 +22,14 @@ class ViewPagerFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.view_pager, container, false)
 
-        val fragmentList = arrayListOf<Fragment>(
+        val fragmentsList = arrayListOf<Fragment>(
             HabitListFragment.newInstance(HabitType.GOOD),
             HabitListFragment.newInstance(HabitType.BAD)
         )
 
         val adapter = HabitPagerAdapter(
             activity as AppCompatActivity,
-            fragmentList
+            fragmentsList
         )
 
         view.viewPager.adapter = adapter
@@ -38,12 +38,11 @@ class ViewPagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         TabLayoutMediator(this.tablay, viewPager) { tab, position ->
-            tab.text = when (position){
-                0 -> getString(R.string.viewPager_goodHabits_title)
-                else -> getString(R.string.viewPager_badHabits_title)
-            }
-            viewPager.setCurrentItem(tab.position, true)
-        }.attach()
+            tab.text = if (position == 0)
+                getString(R.string.viewPager_goodHabits_title)
+            else
+                getString(R.string.viewPager_badHabits_title)
+            viewPager.setCurrentItem(tab.position, true)}.attach()
     }
 
 }
