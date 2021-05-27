@@ -97,27 +97,25 @@ class HabitListFragment : Fragment(), LifecycleOwner {
 
     private fun post(habit: Habit){
         viewModel.postHabit(habit)
-        val countsLeft = habit.times - habit.getCountDone(Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) - 1
+        val timesLeft = habit.times - habit.getCountDone(Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) - 1
         val text = if (habit.type == HabitType.GOOD){
-            if (countsLeft > 0)
-                "${getString(R.string.good_toast1)} ${
+            when (timesLeft) {
+                in 0..Int.MAX_VALUE -> "${getString(R.string.good_toast1)} ${
                     resources.getQuantityString(
-                        R.plurals.plurals_times,
-                        countsLeft,
-                        countsLeft
-                    )}"
-            else
-                getString(R.string.good_toast2)
+                        R.plurals.plurals_times, timesLeft, timesLeft
+                    )
+                }"
+                else -> getString(R.string.good_toast2)
+            }
         } else{
-            if (countsLeft > 0)
-                "${getString(R.string.bad_toast1)} ${
+            when (timesLeft) {
+                in 0..Int.MAX_VALUE-> "${getString(R.string.bad_toast1)} ${
                     resources.getQuantityString(
-                        R.plurals.plurals_times,
-                        countsLeft,
-                        countsLeft
-                    )}"
-            else
-                getString(R.string.bad_toast2)
+                        R.plurals.plurals_times, timesLeft, timesLeft
+                    )
+                }"
+                else -> getString(R.string.bad_toast2)
+            }
         }
         val toast = Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT)
         toast.setGravity(Gravity.BOTTOM, 0, 30)
