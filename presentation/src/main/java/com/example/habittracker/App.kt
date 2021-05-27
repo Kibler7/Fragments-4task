@@ -11,7 +11,6 @@ import com.example.habittracker.dagger.subcomp.HabitRedactorViewModelModule
 import com.example.habittracker.dagger.subcomp.ViewModelComponent
 import com.example.habittracker.ui.fragments.HabitList.HabitListFragment
 import com.example.habittracker.ui.fragments.redactor.HabitRedactorFragment
-import com.example.habittracker.ui.fragments.redactor.HabitRedactorViewModel
 
 class App : Application() {
 
@@ -19,7 +18,6 @@ class App : Application() {
         private set
 
     lateinit var viewModelComponent: ViewModelComponent
-
     lateinit var listViewModelComponent: HabitListViewModelComponent
 
     override fun onCreate() {
@@ -30,13 +28,13 @@ class App : Application() {
 
     fun createViewModelHabitListComponent(habitListFragment: HabitListFragment, habitType: HabitType){
         listViewModelComponent = applicationComponent.
-            getListViewModelComponent().requestModule(
+            getListViewModelComponent().getModule(
             HabitListViewModelModule(habitListFragment,habitType)
         )!!.build()!!
     }
 
     fun createViewModelRedactorComponent(habitRedactorFragment: HabitRedactorFragment){
-        viewModelComponent = applicationComponent.getViewModelComponent().requestModule(
+        viewModelComponent = applicationComponent.getViewModelComponent().getModule(
             HabitRedactorViewModelModule(habitRedactorFragment))!!.build()!!
     }
 }

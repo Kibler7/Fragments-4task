@@ -19,7 +19,7 @@ class HabitListViewModelModule (private val habitListFragment: HabitListFragment
     @ViewModelScope
     @Provides
     fun provideHabitListViewModel(
-        habitsUseCase: GetHabitsUseCase,
+        getHabitsUseCase: GetHabitsUseCase,
         deleteHabitUseCase: DeleteHabitUseCase,
         postHabitUseCase: PostHabitsUseCase
     ): HabitListViewModel {
@@ -27,10 +27,8 @@ class HabitListViewModelModule (private val habitListFragment: HabitListFragment
         return ViewModelProvider(habitListFragment, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return HabitListViewModel(
-                    habitsUseCase,
-                    deleteHabitUseCase,
-                    postHabitUseCase,
-                    habitType
+                    getHabitsUseCase, deleteHabitUseCase,
+                    postHabitUseCase, habitType
                 ) as T
             }
         }).get(HabitListViewModel::class.java)

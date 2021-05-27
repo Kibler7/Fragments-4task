@@ -32,7 +32,6 @@ class BottomSheetFragment() : Fragment() {
 
         habit_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 viewModel.filter.filter(newText)
                 return false

@@ -12,12 +12,12 @@ import com.google.gson.stream.JsonWriter
 class HabitTypeAdapter : TypeAdapter<HabitMap>() {
 
     companion object {
-        private const val NAME = "title"
+        const val NAME = "title"
         private const val DESCRIPTION = "description"
         private const val PRIORITY = "priority"
         private const val TYPE = "type"
         private const val FREQUENCY = "frequency"
-        private const val COUNT = "count"
+        const val COUNT = "count"
         private const val COLOR = "color"
         private const val DATE = "date"
         const val UID = "uid"

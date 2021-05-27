@@ -15,8 +15,6 @@ import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.domain.entities.Habit
 import com.example.domain.entities.HabitType
@@ -43,7 +41,7 @@ class HabitRedactorFragment : Fragment(), ColorChoseDialog.OnInputListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         (requireActivity().application as App).createViewModelRedactorComponent(this)
-        (requireActivity().application as App).viewModelComponent.injectFragment2(this)
+        (requireActivity().application as App).viewModelComponent.injectHabitRedactorFragment(this)
         val binding = DataBindingUtil.inflate<FragmentHabitRedactorBinding>(inflater,
             R.layout.fragment_habit_redactor, container, false)
         binding.lifecycleOwner = this

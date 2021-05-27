@@ -11,7 +11,7 @@ import dagger.Provides
 
 
 @Module
-class HabitRedactorViewModelModule (private val fragment: HabitRedactorFragment) {
+class HabitRedactorViewModelModule (private val redactorFragment: HabitRedactorFragment) {
 
     @ViewModelScope
     @Provides
@@ -20,11 +20,10 @@ class HabitRedactorViewModelModule (private val fragment: HabitRedactorFragment)
         updateHabitUseCase: UpdateHabitUseCase
     ): HabitRedactorViewModel {
 
-        return ViewModelProvider(fragment, object : ViewModelProvider.Factory {
+        return ViewModelProvider(redactorFragment, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return HabitRedactorViewModel(
-                    addHabitUseCase,
-                    updateHabitUseCase
+                    addHabitUseCase, updateHabitUseCase
                 ) as T
             }
         }).get(HabitRedactorViewModel::class.java)

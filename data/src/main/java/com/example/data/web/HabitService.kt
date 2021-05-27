@@ -1,7 +1,6 @@
 package com.example.data.web
 
 import com.example.data.HabitMap
-import com.example.domain.entities.Habit
 import com.google.gson.internal.LinkedTreeMap
 import retrofit2.Call
 import retrofit2.http.*

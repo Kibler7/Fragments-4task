@@ -48,11 +48,9 @@ class HabitListFragment : Fragment(), LifecycleOwner {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-
-        val habitType =
-            this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE) as HabitType
-        (requireActivity().application as App).createViewModelHabitListComponent(this, habitType)
-        (requireActivity().application as App).listViewModelComponent.injectFragment(this)
+        (requireActivity().application as App).createViewModelHabitListComponent(this,
+            this@HabitListFragment.arguments?.getSerializable(HABIT_TYPE) as HabitType)
+        (requireActivity().application as App).listViewModelComponent.injectHabitListFragment(this)
         return inflater.inflate(R.layout.fragment_habit_list, container, false)
     }
 

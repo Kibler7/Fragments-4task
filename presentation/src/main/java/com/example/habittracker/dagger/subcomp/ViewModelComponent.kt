@@ -12,11 +12,12 @@ annotation class ViewModelScope
 @Subcomponent(modules = [HabitRedactorViewModelModule::class])
 interface ViewModelComponent {
 
+    fun injectHabitRedactorFragment(habitRedactorFragment: HabitRedactorFragment)
+
     @Subcomponent.Builder
     interface Builder {
-        fun requestModule(module: HabitRedactorViewModelModule?): Builder?
+        fun getModule(module: HabitRedactorViewModelModule?): Builder?
         fun build(): ViewModelComponent?
     }
 
-    fun injectFragment2(habitRedactorFragment: HabitRedactorFragment)
 }

@@ -12,13 +12,14 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.example.data.DatesConverter
 import com.example.data.PriorityConverter
+import com.example.data.web.HabitTypeAdapter
 import java.io.Serializable
 @Entity
 @TypeConverters(com.example.data.TypeConverter::class,
                 PriorityConverter::class, DatesConverter::class)
-data class HabitMap(@SerializedName("token")val name:
+data class HabitMap(@SerializedName(HabitTypeAdapter.NAME)val name:
                     String, val description: String, val type: HabitType,
-                    val priority: HabitPriority, @SerializedName("count") val times: Int,
+                    val priority: HabitPriority, @SerializedName(HabitTypeAdapter.COUNT) val times: Int,
                     val period: Int, var color : Int)
     : Serializable {
     @PrimaryKey(autoGenerate = true)

@@ -1,5 +1,6 @@
 package com.example.data
 
+import android.util.Log
 import com.example.data.db.AppDataBase
 import com.example.data.web.HabitTypeAdapter
 import com.example.data.web.SearchRepository
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
+import java.net.UnknownHostException
 
 class HabitRepositoryImpl(private val dataBase: AppDataBase,
                           private val retrofitService: SearchRepository) : HabitRepository {
@@ -50,33 +52,52 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
         withContext(Dispatchers.IO){
             val habitMap = HabitMap.toMap(habit)
             dataBase.habitDao().updateHabit(habitMap)
-            retrofitService.postHabit(habitMap, date).awaitResponse()
-
+            try {
+                retrofitService.postHabit(habitMap, date).awaitResponse()
+            }
+            catch (e : UnknownHostException){
+                Log.e("e", "no connect")
+            }
         }
     }
 
 
     private fun  getDataFromServer() = GlobalScope.launch {
         withContext(Dispatchers.IO){
-            remoteHabits = retrofitService.getHabits().awaitResponse().body()
-            insertFromServerToDB(remoteHabits)
+            try {
+                remoteHabits = retrofitService.getHabits().awaitResponse().body()
+                insertFromServerToDB(remoteHabits)
+            }
+            catch (e : UnknownHostException){
+                Log.e("e", "no connect")
+            }
         }
     }
 
 
     private fun sendToServer(habit: HabitMap) =
         GlobalScope.launch(Dispatchers.IO) {
-            val response = retrofitService.putHabit(habit).awaitResponse()
-            if (response.isSuccessful){
-                habit.uid = response.body()!![HabitTypeAdapter.UID]
-                dataBase.habitDao().updateHabit(habit)
+            try {
+                val response = retrofitService.putHabit(habit).awaitResponse()
+                if (response.isSuccessful) {
+                    habit.uid = response.body()!![HabitTypeAdapter.UID]
+                    dataBase.habitDao().updateHabit(habit)
+                }
+            }
+            catch (e : UnknownHostException){
+                Log.e("e", "no connect")
             }
         }
 
     private fun deleteFromServer(habit: HabitMap) =
         GlobalScope.launch(Dispatchers.IO) {
-            if (habit.uid != null) {
-                retrofitService.deleteHabit(habit).awaitResponse()
+            try {
+                if (habit.uid != null) {
+                    retrofitService.deleteHabit(habit).awaitResponse()
+                }
+            }
+            catch (e : UnknownHostException){
+                Log.e("e", "no connect")
             }
         }
 
@@ -85,7 +106,6 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
             val habit = dataBase.habitDao().getByName(it.name)
             if (habit == null)
                 dataBase.habitDao().insert(it)
-
         }
     }
 
