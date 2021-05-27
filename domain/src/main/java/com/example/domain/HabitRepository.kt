@@ -12,7 +12,7 @@ public interface HabitRepository {
 
     fun updateHabit(habit: Habit)
 
-    fun getLocalData() : Flow<List<Habit>>
+    fun getHabitsData() : Flow<List<Habit>>
 
     fun postHabit(habit : Habit, date : Int) : Job
 

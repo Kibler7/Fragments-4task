@@ -57,10 +57,8 @@ data class HabitMap(@SerializedName("token")val name:
 }
 class DatesConverter {
     @TypeConverter
-    fun fromDates(doneDates: MutableList<Int>): String {
-        val gson = Gson()
-        return gson.toJson(doneDates)
-    }
+    fun fromDates(doneDates: MutableList<Int>): String = Gson().toJson(doneDates)
+
 
     @TypeConverter
     fun toDates(datesString: String): MutableList<Int> {
@@ -71,9 +69,7 @@ class DatesConverter {
 
 class TypeConverter {
     @TypeConverter
-    fun fromType(type: HabitType): String {
-        return type.toString()
-    }
+    fun fromType(type: HabitType): String = type.toString()
 
     @TypeConverter
     fun toType(data: String): HabitType {

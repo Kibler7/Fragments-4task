@@ -92,7 +92,4 @@ class HabitListViewModel(private val getHabitsUseCase: GetHabitsUseCase,
             }
         }
     }
-
-
-
 }

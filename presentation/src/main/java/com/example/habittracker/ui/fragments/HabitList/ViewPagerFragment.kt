@@ -22,14 +22,12 @@ class ViewPagerFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.view_pager, container, false)
 
-        val fragmentsList = arrayListOf<Fragment>(
-            HabitListFragment.newInstance(HabitType.GOOD),
-            HabitListFragment.newInstance(HabitType.BAD)
-        )
-
         val adapter = HabitPagerAdapter(
             activity as AppCompatActivity,
-            fragmentsList
+            arrayListOf<Fragment>(
+                HabitListFragment.newInstance(HabitType.GOOD),
+                HabitListFragment.newInstance(HabitType.BAD)
+            )
         )
 
         view.viewPager.adapter = adapter

@@ -1,6 +1,7 @@
 package com.example.data
 
 import com.example.data.db.AppDataBase
+import com.example.data.web.HabitTypeAdapter
 import com.example.data.web.SearchRepository
 import com.example.domain.HabitRepository
 import com.example.domain.entities.Habit
@@ -44,7 +45,7 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
         sendToServer(habitMap)
     }
 
-    override fun getLocalData(): Flow<List<Habit>> =  localHabits.map { it.map { HabitMap.toHabit(it) } }
+    override fun getHabitsData(): Flow<List<Habit>> =  localHabits.map { it.map { HabitMap.toHabit(it) } }
     override fun postHabit(habit: Habit, date: Int) = GlobalScope.launch {
         withContext(Dispatchers.IO){
             val habitMap = HabitMap.toMap(habit)
@@ -67,7 +68,7 @@ class HabitRepositoryImpl(private val dataBase: AppDataBase,
         GlobalScope.launch(Dispatchers.IO) {
             val response = retrofitService.putHabit(habit).awaitResponse()
             if (response.isSuccessful){
-                habit.uid = response.body()!!["uid"]
+                habit.uid = response.body()!![HabitTypeAdapter.UID]
                 dataBase.habitDao().updateHabit(habit)
             }
         }

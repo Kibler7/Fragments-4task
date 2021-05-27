@@ -10,23 +10,37 @@ import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 
 class HabitTypeAdapter : TypeAdapter<HabitMap>() {
+
+    companion object {
+        private const val NAME = "title"
+        private const val DESCRIPTION = "description"
+        private const val PRIORITY = "priority"
+        private const val TYPE = "type"
+        private const val FREQUENCY = "frequency"
+        private const val COUNT = "count"
+        private const val COLOR = "color"
+        private const val DATE = "date"
+        const val UID = "uid"
+        private const val DONE_DATES = "done_dates"
+
+    }
     override fun write(out: JsonWriter?, value: HabitMap?) {
         out!!.beginObject()
         out.apply {
-            name("title").value(value?.name)
-            name("description").value(value?.description ?: " ")
-            name("priority").value(value?.priority!!.value ?: 0)
-            name("type").value(value.type.value)
-            name("frequency").value(value?.period)
-            name("count").value(value?.times ?: 0)
-            name("color").value(value?.color ?: 0)
-            name("date").value( value?.date)
+            name(NAME).value(value?.name)
+            name(DESCRIPTION).value(value?.description ?: " ")
+            name(PRIORITY).value(value?.priority!!.value ?: 0)
+            name(TYPE).value(value.type.value)
+            name(FREQUENCY).value(value?.period)
+            name(COUNT).value(value?.times ?: 0)
+            name(COLOR).value(value?.color ?: 0)
+            name(DATE).value( value?.date)
+            name(DONE_DATES).beginArray()
+            value!!.doneDates.forEach{ out.value(it)}
+            endArray()
         }
-        out.name("done_dates").beginArray()
-        value!!.doneDates.forEach{ out.value(it)}
-        out.endArray()
         if (value!!.uid != null)
-            out.name("uid").value(value.uid)
+            out.name(UID).value(value.uid)
         out.endObject()
     }
 
@@ -54,16 +68,16 @@ class HabitTypeAdapter : TypeAdapter<HabitMap>() {
             }
 
             when (name) {
-                "title" -> habitName = `in`.nextString()
-                "description" -> description = `in`.nextString()
-                "priority" -> priority = `in`.nextInt()
-                "type" -> type = `in`.nextInt()
-                "count" -> count = `in`.nextInt()
-                "color" -> color = `in`.nextInt()
-                "frequency" -> frequency = `in`.nextInt()
-                "uid" -> uid = `in`.nextString()
-                "date" -> date = `in`.nextInt()
-                "done_dates" -> {`in`.beginArray()
+                NAME -> habitName = `in`.nextString()
+                DESCRIPTION -> description = `in`.nextString()
+                PRIORITY -> priority = `in`.nextInt()
+                TYPE -> type = `in`.nextInt()
+                COUNT -> count = `in`.nextInt()
+                COLOR -> color = `in`.nextInt()
+                FREQUENCY -> frequency = `in`.nextInt()
+                UID -> uid = `in`.nextString()
+                DATE -> date = `in`.nextInt()
+                DONE_DATES -> {`in`.beginArray()
                     while (`in`.peek() != JsonToken.END_ARRAY)
                         done_dates.add(`in`.nextInt())
                     `in`.endArray()}
